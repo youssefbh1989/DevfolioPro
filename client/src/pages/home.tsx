@@ -1,0 +1,28 @@
+import { useState } from "react";
+import { HeroSection } from "@/components/hero-section";
+import { ServicesSection } from "@/components/services-section";
+import { PortfolioSection } from "@/components/portfolio-section";
+import { ProcessSection } from "@/components/process-section";
+import { WhyChooseSection } from "@/components/why-choose-section";
+import { ContactSection } from "@/components/contact-section";
+import { Navigation } from "@/components/navigation";
+import { Footer } from "@/components/footer";
+
+export default function Home() {
+  const [language, setLanguage] = useState<"en" | "ar">("en");
+  
+  return (
+    <div className={language === "ar" ? "rtl" : ""} dir={language === "ar" ? "rtl" : "ltr"}>
+      <Navigation language={language} onLanguageChange={setLanguage} />
+      <main>
+        <HeroSection language={language} />
+        <ServicesSection language={language} />
+        <PortfolioSection language={language} />
+        <ProcessSection language={language} />
+        <WhyChooseSection language={language} />
+        <ContactSection language={language} />
+      </main>
+      <Footer language={language} />
+    </div>
+  );
+}
