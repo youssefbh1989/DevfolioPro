@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { MotionConfig } from "framer-motion";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { ScrollToTop } from "@/components/scroll-to-top";
 import Home from "@/pages/home";
 import About from "@/pages/about";
 import Privacy from "@/pages/privacy";
@@ -36,6 +37,7 @@ function App() {
       <TooltipProvider>
         <LanguageProvider>
           <MotionConfig reducedMotion={prefersReducedMotion ? "always" : "never"}>
+            <ScrollToTop />
             <Toaster />
             <Router />
           </MotionConfig>
