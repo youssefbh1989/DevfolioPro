@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
-
-interface PrivacyPageProps {
-  language: "en" | "ar";
-}
+import { useEffect } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { Navigation } from "@/components/navigation";
+import { Footer } from "@/components/footer";
 
 const content = {
   en: {
@@ -91,11 +91,18 @@ const content = {
   },
 };
 
-export default function Privacy({ language }: PrivacyPageProps) {
+export default function Privacy() {
+  const { language } = useLanguage();
   const t = content[language];
 
+  useEffect(() => {
+    document.documentElement.dir = language === "ar" ? "rtl" : "ltr";
+    document.documentElement.lang = language;
+  }, [language]);
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className={`min-h-screen bg-background ${language === "ar" ? "rtl" : ""}`}>
+      <Navigation />
       <section className="py-20 md:py-32 bg-gradient-to-br from-primary/10 to-accent/5">
         <div className="max-w-4xl mx-auto px-6">
           <motion.div
@@ -135,6 +142,7 @@ export default function Privacy({ language }: PrivacyPageProps) {
           </div>
         </div>
       </section>
+      <Footer />
     </div>
   );
 }

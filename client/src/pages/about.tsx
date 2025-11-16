@@ -1,12 +1,11 @@
 import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Target, Eye, Users, Award } from "lucide-react";
 import { staggerContainer, staggerItem } from "@/lib/animations";
-
-interface AboutPageProps {
-  language: "en" | "ar";
-}
+import { useLanguage } from "@/contexts/LanguageContext";
+import { Navigation } from "@/components/navigation";
+import { Footer } from "@/components/footer";
 
 const content = {
   en: {
@@ -99,13 +98,20 @@ const content = {
   },
 };
 
-export default function About({ language }: AboutPageProps) {
+export default function About() {
+  const { language } = useLanguage();
   const t = content[language];
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.2 });
 
+  useEffect(() => {
+    document.documentElement.dir = language === "ar" ? "rtl" : "ltr";
+    document.documentElement.lang = language;
+  }, [language]);
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className={`min-h-screen bg-background ${language === "ar" ? "rtl" : ""}`}>
+      <Navigation />
       {/* Hero Section */}
       <section className="relative py-20 md:py-32 bg-gradient-to-br from-primary/10 to-accent/5">
         <div className="max-w-7xl mx-auto px-6">
@@ -253,6 +259,7 @@ export default function About({ language }: AboutPageProps) {
           </motion.div>
         </div>
       </section>
+      <Footer />
     </div>
   );
 }

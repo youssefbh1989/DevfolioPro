@@ -1,8 +1,6 @@
+import { Link, useLocation } from "wouter";
 import { Smartphone, Globe, Mail, MapPin, Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
-
-interface FooterProps {
-  language: "en" | "ar";
-}
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const content = {
   en: {
@@ -10,6 +8,7 @@ const content = {
     about: "About Us",
     careers: "Careers",
     blog: "Blog",
+    privacy: "Privacy Policy",
     services: "Services",
     mobileApps: "Mobile Apps",
     websites: "Websites",
@@ -27,6 +26,7 @@ const content = {
     about: "من نحن",
     careers: "الوظائف",
     blog: "المدونة",
+    privacy: "سياسة الخصوصية",
     services: "الخدمات",
     mobileApps: "تطبيقات الجوال",
     websites: "المواقع الإلكترونية",
@@ -41,13 +41,31 @@ const content = {
   },
 };
 
-export function Footer({ language }: FooterProps) {
+export function Footer() {
+  const { language } = useLanguage();
   const t = content[language];
+  const [location, navigate] = useLocation();
+  const isHomePage = location === "/";
 
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
+  const handleSectionClick = (id: string) => {
+    if (isHomePage) {
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    } else {
+      navigate("/");
+      // Wait for home page to mount and element to be available
+      const scrollWhenReady = () => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        } else {
+          // Retry after a short delay if element not found yet
+          setTimeout(scrollWhenReady, 50);
+        }
+      };
+      setTimeout(scrollWhenReady, 200);
     }
   };
 
@@ -83,21 +101,26 @@ export function Footer({ language }: FooterProps) {
           <div>
             <h4 className="font-semibold text-lg mb-4 text-background">{t.company}</h4>
             <ul className="space-y-3">
-              {[
-                { label: t.about, href: "#" },
-                { label: t.careers, href: "#" },
-                { label: t.blog, href: "#" },
-              ].map((link, index) => (
-                <li key={index}>
-                  <a
-                    href={link.href}
-                    className="text-background/80 hover:text-accent transition-colors"
-                    data-testid={`link-footer-${link.label.toLowerCase().replace(/\s+/g, '-')}`}
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
+              <li>
+                <Link href="/about" className="text-background/80 hover:text-accent transition-colors" data-testid="link-footer-about">
+                  {t.about}
+                </Link>
+              </li>
+              <li>
+                <Link href="/careers" className="text-background/80 hover:text-accent transition-colors" data-testid="link-footer-careers">
+                  {t.careers}
+                </Link>
+              </li>
+              <li>
+                <Link href="/blog" className="text-background/80 hover:text-accent transition-colors" data-testid="link-footer-blog">
+                  {t.blog}
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy" className="text-background/80 hover:text-accent transition-colors" data-testid="link-footer-privacy">
+                  {t.privacy}
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -106,7 +129,7 @@ export function Footer({ language }: FooterProps) {
             <ul className="space-y-3">
               <li>
                 <button
-                  onClick={() => scrollToSection("services")}
+                  onClick={() => handleSectionClick("services")}
                   className="text-background/80 hover:text-accent transition-colors text-left"
                   data-testid="link-footer-mobile-apps"
                 >
@@ -115,7 +138,7 @@ export function Footer({ language }: FooterProps) {
               </li>
               <li>
                 <button
-                  onClick={() => scrollToSection("services")}
+                  onClick={() => handleSectionClick("services")}
                   className="text-background/80 hover:text-accent transition-colors text-left"
                   data-testid="link-footer-websites"
                 >
@@ -123,13 +146,13 @@ export function Footer({ language }: FooterProps) {
                 </button>
               </li>
               <li>
-                <a
-                  href="#"
-                  className="text-background/80 hover:text-accent transition-colors"
+                <button
+                  onClick={() => handleSectionClick("contact")}
+                  className="text-background/80 hover:text-accent transition-colors text-left"
                   data-testid="link-footer-consulting"
                 >
                   {t.consulting}
-                </a>
+                </button>
               </li>
             </ul>
           </div>

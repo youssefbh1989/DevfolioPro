@@ -1,5 +1,5 @@
 import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,10 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin, Briefcase, Clock } from "lucide-react";
 import { staggerContainer, staggerItem } from "@/lib/animations";
 import type { Career } from "@shared/schema";
-
-interface CareersPageProps {
-  language: "en" | "ar";
-}
+import { useLanguage } from "@/contexts/LanguageContext";
+import { Navigation } from "@/components/navigation";
+import { Footer } from "@/components/footer";
 
 const content = {
   en: {
@@ -59,10 +58,16 @@ const content = {
   },
 };
 
-export default function Careers({ language }: CareersPageProps) {
+export default function Careers() {
+  const { language } = useLanguage();
   const t = content[language];
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.2 });
+
+  useEffect(() => {
+    document.documentElement.dir = language === "ar" ? "rtl" : "ltr";
+    document.documentElement.lang = language;
+  }, [language]);
 
   const { data: careers = [], isLoading } = useQuery<Career[]>({
     queryKey: ["/api/careers"],
@@ -71,7 +76,8 @@ export default function Careers({ language }: CareersPageProps) {
   const openCareers = careers.filter((c) => c.status === "open");
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className={`min-h-screen bg-background ${language === "ar" ? "rtl" : ""}`}>
+      <Navigation />
       {/* Hero Section */}
       <section className="py-20 md:py-32 bg-gradient-to-br from-primary/10 to-accent/5">
         <div className="max-w-7xl mx-auto px-6">
@@ -220,6 +226,7 @@ export default function Careers({ language }: CareersPageProps) {
           )}
         </div>
       </section>
+      <Footer />
     </div>
   );
 }
