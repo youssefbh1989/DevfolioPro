@@ -50,7 +50,7 @@ export function PortfolioSection({ language }: PortfolioSectionProps) {
   const [activeTab, setActiveTab] = useState("mobile");
   const [selectedProject, setSelectedProject] = useState<PortfolioProject | null>(null);
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.2 });
+  const isInView = useInView(ref, { once: true, amount: 0.1 });
 
   const { data: projects = [], isLoading } = useQuery<PortfolioProject[]>({
     queryKey: ["/api/portfolio"],
@@ -163,12 +163,12 @@ export function PortfolioSection({ language }: PortfolioSectionProps) {
               <TabsContent value="mobile" className="mt-8">
                 <motion.div
                   variants={staggerContainer}
-                  initial="hidden"
-                  animate={isInView ? "visible" : "hidden"}
+                  initial="visible"
+                  animate="visible"
                   className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
                 >
                   {mobileProjects.map((project) => (
-                    <motion.div key={project.id} variants={staggerItem}>
+                    <motion.div key={project.id} variants={staggerItem} initial="visible">
                       <ProjectCard project={project} />
                     </motion.div>
                   ))}
@@ -178,12 +178,12 @@ export function PortfolioSection({ language }: PortfolioSectionProps) {
               <TabsContent value="websites" className="mt-8">
                 <motion.div
                   variants={staggerContainer}
-                  initial="hidden"
-                  animate={isInView ? "visible" : "hidden"}
+                  initial="visible"
+                  animate="visible"
                   className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
                 >
                   {websiteProjects.map((project) => (
-                    <motion.div key={project.id} variants={staggerItem}>
+                    <motion.div key={project.id} variants={staggerItem} initial="visible">
                       <ProjectCard project={project} />
                     </motion.div>
                   ))}
