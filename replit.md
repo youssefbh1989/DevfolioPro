@@ -3,6 +3,30 @@
 ## Overview
 Qatar Digital Solutions is a bilingual (English/Arabic) professional portfolio website for the Qatari market, showcasing mobile app and website development services. It functions as a marketing and lead generation tool, featuring services, portfolio, process, value propositions, and a contact form. The design is premium, agency-style, inspired by Middle Eastern luxury aesthetics.
 
+## Recent Changes (November 16, 2025)
+
+### Blog Image Fix
+- ✅ Fixed broken/crashed images on blog page and blog detail pages
+- ✅ Downloaded professional stock images for all 3 blog posts (mobile app development, web development, digital transformation)
+- ✅ Updated database with correct image paths in `/attached_assets/stock_images/` directory
+- ✅ Updated seed data to use correct images for future deployments
+- ✅ All blog post images now load correctly on both listing and detail pages
+
+### Blog Post Detail Page Implementation
+- ✅ Created blog post detail page (route: `/blog/:slug`)
+- ✅ Fixed 404 error when clicking "Read More" on blog posts
+- ✅ Blog detail page displays: featured image, title, category, author, date, full content
+- ✅ Back to Blog button for easy navigation
+- ✅ Full bilingual support with RTL layout
+
+### Additional Pages (About, Privacy, Careers, Blog)
+- ✅ Created LanguageContext provider for shared bilingual state management
+- ✅ Implemented About, Privacy Policy, Careers, and Blog listing pages
+- ✅ Extended database schema with blogPosts and careers tables
+- ✅ Added API endpoints for blog and careers
+- ✅ Seeded 3 blog posts and 3 career positions with bilingual content
+- ✅ Updated Navigation and Footer for consistent layout across all pages
+
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 

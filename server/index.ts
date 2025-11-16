@@ -64,7 +64,7 @@ async function seedData() {
         excerptAr: "أفضل الممارسات لبناء تطبيقات الجوال التي تنمو مع عملك",
         category: "Mobile Development",
         categoryAr: "تطوير تطبيقات الجوال",
-        imageUrl: "/attached_assets/mobile1.webp",
+        imageUrl: "/attached_assets/stock_images/modern_mobile_app_de_2ee0ae45.jpg",
         publishedAt: new Date("2024-11-01"),
       },
       {
@@ -79,7 +79,7 @@ async function seedData() {
         excerptAr: "ابق في المقدمة مع أحدث تقنيات تطوير الويب",
         category: "Web Development",
         categoryAr: "تطوير المواقع",
-        imageUrl: "/attached_assets/website1.webp",
+        imageUrl: "/attached_assets/stock_images/web_development_codi_85800bb3.jpg",
         publishedAt: new Date("2024-10-15"),
       },
       {
@@ -94,7 +94,7 @@ async function seedData() {
         excerptAr: "حوّل عملك بالحلول الرقمية",
         category: "Digital Strategy",
         categoryAr: "الاستراتيجية الرقمية",
-        imageUrl: "/attached_assets/mobile2.webp",
+        imageUrl: "/attached_assets/stock_images/digital_transformati_8fee5be1.jpg",
         publishedAt: new Date("2024-09-20"),
       },
     ];
