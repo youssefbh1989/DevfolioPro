@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { ExternalLink, CheckCircle2 } from "lucide-react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
-import { staggerContainer, staggerItem } from "@/lib/animations";
+import { staggerContainer, staggerItem, cardHover, fadeInUp } from "@/lib/animations";
 import type { PortfolioProject } from "@shared/schema";
 
 interface PortfolioSectionProps {
@@ -61,26 +61,26 @@ export function PortfolioSection({ language }: PortfolioSectionProps) {
 
   const ProjectCard = ({ project }: { project: PortfolioProject }) => (
     <motion.div
-      whileHover={{ y: -8 }}
-      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+      variants={cardHover}
+      initial="rest"
+      whileHover="hover"
+      style={{ perspective: "1000px" }}
     >
       <Card
-        className="group hover-elevate transition-all duration-300 overflow-hidden cursor-pointer h-full"
+        className="group transition-all duration-300 overflow-hidden cursor-pointer h-full"
         onClick={() => setSelectedProject(project)}
         data-testid={`card-${project.type}-project-${project.id}`}
       >
         <motion.div
           className={project.type === "mobile" ? "aspect-[3/4]" : "aspect-[4/3]"}
           style={{ overflow: "hidden", backgroundColor: "var(--muted)" }}
-          whileHover={{ scale: 1.02 }}
-          transition={{ duration: 0.4 }}
         >
           <motion.img
             src={project.imageUrl}
             alt={language === "ar" ? project.titleAr : project.title}
             className="w-full h-full object-cover"
-            whileHover={{ scale: 1.1 }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            whileHover={{ scale: 1.12 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             data-testid={`img-${project.type}-project-${project.id}`}
           />
         </motion.div>
@@ -92,7 +92,7 @@ export function PortfolioSection({ language }: PortfolioSectionProps) {
             <motion.div
               initial={{ opacity: 0, x: -10 }}
               whileHover={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.2 }}
+              transition={{ duration: 0.3 }}
             >
               <ExternalLink className="h-5 w-5 text-muted-foreground shrink-0" />
             </motion.div>
@@ -117,9 +117,9 @@ export function PortfolioSection({ language }: PortfolioSectionProps) {
     <section id="portfolio" className="py-20 md:py-24 bg-background" ref={ref}>
       <div className="max-w-7xl mx-auto px-6">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
+          variants={fadeInUp}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
           className="text-center mb-16"
         >
           <h2 className="font-serif font-bold text-3xl md:text-5xl text-foreground mb-4" data-testid="text-portfolio-title">

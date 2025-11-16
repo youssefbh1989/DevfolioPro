@@ -6,6 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { LayoutDashboard, Package, FolderKanban, BarChart, LogOut } from "lucide-react";
+import { motion } from "framer-motion";
+import { fadeInUp, staggerContainer, staggerItem, cardHover, magneticHover } from "@/lib/animations";
 
 export default function AdminDashboard() {
   const { isAdmin, isLoading } = useAdmin();
@@ -49,92 +51,152 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b">
+      <motion.header 
+        variants={fadeInUp}
+        initial="hidden"
+        animate="visible"
+        className="border-b"
+      >
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold" style={{ color: "#7D0B2E" }}>
               Admin Dashboard
             </h1>
-            <Button
-              variant="outline"
-              onClick={handleLogout}
-              data-testid="button-admin-logout"
+            <motion.div
+              variants={magneticHover}
+              initial="rest"
+              whileHover="hover"
+              whileTap="tap"
             >
-              <LogOut className="mr-2 h-4 w-4" />
-              Logout
-            </Button>
+              <Button
+                variant="outline"
+                onClick={handleLogout}
+                data-testid="button-admin-logout"
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
+              </Button>
+            </motion.div>
           </div>
         </div>
-      </header>
+      </motion.header>
 
       <div className="container mx-auto px-4 py-8">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <Link href="/admin/projects" data-testid="link-admin-projects">
-            <Card className="hover-elevate cursor-pointer transition-all">
-              <CardHeader>
-                <div
-                  className="w-12 h-12 rounded-lg flex items-center justify-center mb-4"
-                  style={{ backgroundColor: "#7D0B2E" }}
-                >
-                  <FolderKanban className="h-6 w-6 text-white" />
-                </div>
-                <CardTitle>Portfolio Projects</CardTitle>
-                <CardDescription>
-                  Manage mobile apps and website projects
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </Link>
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          animate="visible"
+          className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+          style={{ perspective: "1000px" }}
+        >
+          <motion.div variants={staggerItem}>
+            <Link href="/admin/projects" data-testid="link-admin-projects">
+              <motion.div
+                variants={cardHover}
+                initial="rest"
+                whileHover="hover"
+              >
+                <Card className="cursor-pointer transition-all">
+                  <CardHeader>
+                    <motion.div
+                      className="w-12 h-12 rounded-lg flex items-center justify-center mb-4"
+                      style={{ backgroundColor: "#7D0B2E" }}
+                      whileHover={{ rotate: [0, -5, 5, 0], scale: 1.1 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <FolderKanban className="h-6 w-6 text-white" />
+                    </motion.div>
+                    <CardTitle>Portfolio Projects</CardTitle>
+                    <CardDescription>
+                      Manage mobile apps and website projects
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </motion.div>
+            </Link>
+          </motion.div>
 
-          <Link href="/admin/services" data-testid="link-admin-services">
-            <Card className="hover-elevate cursor-pointer transition-all">
-              <CardHeader>
-                <div
-                  className="w-12 h-12 rounded-lg flex items-center justify-center mb-4"
-                  style={{ backgroundColor: "#7D0B2E" }}
-                >
-                  <Package className="h-6 w-6 text-white" />
-                </div>
-                <CardTitle>Services & Pricing</CardTitle>
-                <CardDescription>
-                  Manage service packages and pricing
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </Link>
+          <motion.div variants={staggerItem}>
+            <Link href="/admin/services" data-testid="link-admin-services">
+              <motion.div
+                variants={cardHover}
+                initial="rest"
+                whileHover="hover"
+              >
+                <Card className="cursor-pointer transition-all">
+                  <CardHeader>
+                    <motion.div
+                      className="w-12 h-12 rounded-lg flex items-center justify-center mb-4"
+                      style={{ backgroundColor: "#7D0B2E" }}
+                      whileHover={{ rotate: [0, -5, 5, 0], scale: 1.1 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <Package className="h-6 w-6 text-white" />
+                    </motion.div>
+                    <CardTitle>Services & Pricing</CardTitle>
+                    <CardDescription>
+                      Manage service packages and pricing
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </motion.div>
+            </Link>
+          </motion.div>
 
-          <Link href="/admin/analytics" data-testid="link-admin-analytics">
-            <Card className="hover-elevate cursor-pointer transition-all">
-              <CardHeader>
-                <div
-                  className="w-12 h-12 rounded-lg flex items-center justify-center mb-4"
-                  style={{ backgroundColor: "#7D0B2E" }}
-                >
-                  <BarChart className="h-6 w-6 text-white" />
-                </div>
-                <CardTitle>Analytics</CardTitle>
-                <CardDescription>
-                  View site analytics and metrics
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </Link>
-        </div>
+          <motion.div variants={staggerItem}>
+            <Link href="/admin/analytics" data-testid="link-admin-analytics">
+              <motion.div
+                variants={cardHover}
+                initial="rest"
+                whileHover="hover"
+              >
+                <Card className="cursor-pointer transition-all">
+                  <CardHeader>
+                    <motion.div
+                      className="w-12 h-12 rounded-lg flex items-center justify-center mb-4"
+                      style={{ backgroundColor: "#7D0B2E" }}
+                      whileHover={{ rotate: [0, -5, 5, 0], scale: 1.1 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <BarChart className="h-6 w-6 text-white" />
+                    </motion.div>
+                    <CardTitle>Analytics</CardTitle>
+                    <CardDescription>
+                      View site analytics and metrics
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </motion.div>
+            </Link>
+          </motion.div>
+        </motion.div>
 
-        <Card className="mt-8">
-          <CardHeader>
-            <CardTitle>Quick Stats</CardTitle>
-            <CardDescription>Overview of your digital solutions portfolio</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2 text-sm text-muted-foreground">
-              <p>✅ Admin dashboard is now active</p>
-              <p>📱 Manage portfolio projects from the Projects page</p>
-              <p>💰 Update service packages and pricing from the Services page</p>
-              <p>📊 Track visitor analytics and form submissions from the Analytics page</p>
-            </div>
-          </CardContent>
-        </Card>
+        <motion.div
+          variants={fadeInUp}
+          initial="hidden"
+          animate="visible"
+          transition={{ delay: 0.6 }}
+        >
+          <Card className="mt-8">
+            <CardHeader>
+              <CardTitle>Quick Stats</CardTitle>
+              <CardDescription>Overview of your digital solutions portfolio</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <motion.div
+                variants={staggerContainer}
+                initial="hidden"
+                animate="visible"
+                className="space-y-2 text-sm text-muted-foreground"
+              >
+                <motion.p variants={staggerItem}>✅ Admin dashboard is now active</motion.p>
+                <motion.p variants={staggerItem}>📱 Manage portfolio projects from the Projects page</motion.p>
+                <motion.p variants={staggerItem}>💰 Update service packages and pricing from the Services page</motion.p>
+                <motion.p variants={staggerItem}>📊 Track visitor analytics and form submissions from the Analytics page</motion.p>
+              </motion.div>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
     </div>
   );
