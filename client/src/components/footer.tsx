@@ -56,7 +56,7 @@ export function Footer({ language }: FooterProps) {
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           <div>
-            <h3 className="font-serif font-bold text-2xl mb-4 text-accent" data-testid="text-footer-logo">
+            <h3 className="font-serif font-bold text-2xl mb-4 text-accent" data-testid="text-footer-company">
               Qatar Digital Solutions
             </h3>
             <p className="text-background/80 mb-6" data-testid="text-footer-tagline">{t.tagline}</p>

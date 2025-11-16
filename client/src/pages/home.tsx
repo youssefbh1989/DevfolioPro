@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { HeroSection } from "@/components/hero-section";
 import { ServicesSection } from "@/components/services-section";
 import { PortfolioSection } from "@/components/portfolio-section";
@@ -11,8 +11,13 @@ import { Footer } from "@/components/footer";
 export default function Home() {
   const [language, setLanguage] = useState<"en" | "ar">("en");
   
+  useEffect(() => {
+    document.documentElement.dir = language === "ar" ? "rtl" : "ltr";
+    document.documentElement.lang = language;
+  }, [language]);
+  
   return (
-    <div className={language === "ar" ? "rtl" : ""} dir={language === "ar" ? "rtl" : "ltr"}>
+    <div className={language === "ar" ? "rtl" : ""}>
       <Navigation language={language} onLanguageChange={setLanguage} />
       <main>
         <HeroSection language={language} />
