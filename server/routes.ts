@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertContactSubmissionSchema, insertPortfolioProjectSchema } from "@shared/schema";
+import { insertContactSubmissionSchema, insertPortfolioProjectSchema, insertTestimonialSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/contact", async (req, res) => {
@@ -59,6 +59,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedData = insertPortfolioProjectSchema.parse(req.body);
       const project = await storage.createPortfolioProject(validatedData);
       res.json(project);
+    } catch (error: any) {
+      res.status(400).json({ 
+        error: "Validation failed", 
+        details: error.errors || error.message 
+      });
+    }
+  });
+
+  app.get("/api/testimonials", async (req, res) => {
+    try {
+      const { projectType } = req.query;
+      if (projectType && typeof projectType === "string") {
+        const testimonials = await storage.getTestimonialsByProjectType(projectType);
+        res.json(testimonials);
+      } else {
+        const testimonials = await storage.getAllTestimonials();
+        res.json(testimonials);
+      }
+    } catch (error: any) {
+      res.status(500).json({ error: "Failed to fetch testimonials" });
+    }
+  });
+
+  app.post("/api/testimonials", async (req, res) => {
+    try {
+      const validatedData = insertTestimonialSchema.parse(req.body);
+      const testimonial = await storage.createTestimonial(validatedData);
+      res.json(testimonial);
     } catch (error: any) {
       res.status(400).json({ 
         error: "Validation failed", 

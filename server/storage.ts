@@ -4,7 +4,10 @@ import {
   contactSubmissions,
   type PortfolioProject,
   type InsertPortfolioProject,
-  portfolioProjects
+  portfolioProjects,
+  type Testimonial,
+  type InsertTestimonial,
+  testimonials
 } from "@shared/schema";
 import { db } from "./db";
 import { desc, eq } from "drizzle-orm";
@@ -16,6 +19,9 @@ export interface IStorage {
   getAllPortfolioProjects(): Promise<PortfolioProject[]>;
   getPortfolioProjectsByType(type: string): Promise<PortfolioProject[]>;
   getPortfolioProjectById(id: string): Promise<PortfolioProject | undefined>;
+  createTestimonial(testimonial: InsertTestimonial): Promise<Testimonial>;
+  getAllTestimonials(): Promise<Testimonial[]>;
+  getTestimonialsByProjectType(projectType: string): Promise<Testimonial[]>;
 }
 
 export class DbStorage implements IStorage {
@@ -46,6 +52,21 @@ export class DbStorage implements IStorage {
   async getPortfolioProjectById(id: string): Promise<PortfolioProject | undefined> {
     const [project] = await db.select().from(portfolioProjects).where(eq(portfolioProjects.id, id));
     return project;
+  }
+
+  async createTestimonial(insertTestimonial: InsertTestimonial): Promise<Testimonial> {
+    const [testimonial] = await db.insert(testimonials).values(insertTestimonial).returning();
+    return testimonial;
+  }
+
+  async getAllTestimonials(): Promise<Testimonial[]> {
+    return await db.select().from(testimonials).orderBy(desc(testimonials.createdAt));
+  }
+
+  async getTestimonialsByProjectType(projectType: string): Promise<Testimonial[]> {
+    return await db.select().from(testimonials)
+      .where(eq(testimonials.projectType, projectType))
+      .orderBy(desc(testimonials.createdAt));
   }
 }
 

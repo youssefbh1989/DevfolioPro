@@ -47,12 +47,37 @@ export const insertContactSubmissionSchema = createInsertSchema(contactSubmissio
   projectDescription: z.string().min(10, "Please provide more details about your project"),
 });
 
+export const testimonials = pgTable("testimonials", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  clientName: text("client_name").notNull(),
+  clientNameAr: text("client_name_ar").notNull(),
+  clientPosition: text("client_position").notNull(),
+  clientPositionAr: text("client_position_ar").notNull(),
+  clientCompany: text("client_company").notNull(),
+  clientCompanyAr: text("client_company_ar").notNull(),
+  rating: text("rating").notNull(), // 1-5 stars
+  testimonial: text("testimonial").notNull(),
+  testimonialAr: text("testimonial_ar").notNull(),
+  projectType: text("project_type").notNull(), // "mobile" or "website"
+  avatarUrl: text("avatar_url"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const insertPortfolioProjectSchema = createInsertSchema(portfolioProjects).omit({
   id: true,
   createdAt: true,
+});
+
+export const insertTestimonialSchema = createInsertSchema(testimonials).omit({
+  id: true,
+  createdAt: true,
+}).extend({
+  rating: z.string().regex(/^[1-5]$/, "Rating must be between 1 and 5"),
 });
 
 export type InsertContactSubmission = z.infer<typeof insertContactSubmissionSchema>;
 export type ContactSubmission = typeof contactSubmissions.$inferSelect;
 export type InsertPortfolioProject = z.infer<typeof insertPortfolioProjectSchema>;
 export type PortfolioProject = typeof portfolioProjects.$inferSelect;
+export type InsertTestimonial = z.infer<typeof insertTestimonialSchema>;
+export type Testimonial = typeof testimonials.$inferSelect;

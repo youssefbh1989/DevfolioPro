@@ -4,6 +4,7 @@ import { ServicesSection } from "@/components/services-section";
 import { PortfolioSection } from "@/components/portfolio-section";
 import { ProcessSection } from "@/components/process-section";
 import { WhyChooseSection } from "@/components/why-choose-section";
+import { TestimonialsSection } from "@/components/testimonials-section";
 import { ContactSection } from "@/components/contact-section";
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
@@ -25,6 +26,7 @@ export default function Home() {
         <PortfolioSection language={language} />
         <ProcessSection language={language} />
         <WhyChooseSection language={language} />
+        <TestimonialsSection language={language} />
         <ContactSection language={language} />
       </main>
       <Footer language={language} />
