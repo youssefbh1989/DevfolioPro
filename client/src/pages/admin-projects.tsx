@@ -14,6 +14,8 @@ import { ArrowLeft, Plus, Pencil, Trash2 } from "lucide-react";
 import type { PortfolioProject, InsertPortfolioProject } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { motion } from "framer-motion";
+import { cardHover, staggerContainer, staggerItem } from "@/lib/animations";
 
 export default function AdminProjects() {
   const { isAdmin, isLoading: authLoading } = useAdmin();
@@ -404,7 +406,13 @@ export default function AdminProjects() {
           </TabsList>
 
           <TabsContent value="mobile" className="mt-6">
-            <div className="grid gap-4">
+            <motion.div
+              variants={staggerContainer}
+              initial="hidden"
+              animate="visible"
+              className="grid gap-4"
+              style={{ perspective: "1000px" }}
+            >
               {projectsLoading ? (
                 <div className="text-center py-8">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-gray-100 mx-auto"></div>
@@ -417,34 +425,52 @@ export default function AdminProjects() {
                 </Card>
               ) : (
                 mobileProjects.map((project) => (
-                  <Card key={project.id} data-testid={`project-card-${project.id}`}>
-                    <CardHeader>
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <CardTitle className="text-lg">{project.title}</CardTitle>
-                          <p className="text-sm text-muted-foreground mt-1">{project.category}</p>
-                          <p className="text-sm text-muted-foreground">Client: {project.client}</p>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            data-testid={`button-delete-${project.id}`}
-                            onClick={() => handleDelete(project.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    </CardHeader>
-                  </Card>
+                  <motion.div
+                    key={project.id}
+                    variants={staggerItem}
+                  >
+                    <motion.div
+                      variants={cardHover}
+                      initial="rest"
+                      whileHover="hover"
+                      style={{ perspective: "1000px" }}
+                    >
+                      <Card data-testid={`project-card-${project.id}`}>
+                        <CardHeader>
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <CardTitle className="text-lg">{project.title}</CardTitle>
+                              <p className="text-sm text-muted-foreground mt-1">{project.category}</p>
+                              <p className="text-sm text-muted-foreground">Client: {project.client}</p>
+                            </div>
+                            <div className="flex gap-2">
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                data-testid={`button-delete-${project.id}`}
+                                onClick={() => handleDelete(project.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </CardHeader>
+                      </Card>
+                    </motion.div>
+                  </motion.div>
                 ))
               )}
-            </div>
+            </motion.div>
           </TabsContent>
 
           <TabsContent value="website" className="mt-6">
-            <div className="grid gap-4">
+            <motion.div
+              variants={staggerContainer}
+              initial="hidden"
+              animate="visible"
+              className="grid gap-4"
+              style={{ perspective: "1000px" }}
+            >
               {projectsLoading ? (
                 <div className="text-center py-8">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-gray-100 mx-auto"></div>
@@ -457,30 +483,42 @@ export default function AdminProjects() {
                 </Card>
               ) : (
                 websiteProjects.map((project) => (
-                  <Card key={project.id} data-testid={`project-card-${project.id}`}>
-                    <CardHeader>
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <CardTitle className="text-lg">{project.title}</CardTitle>
-                          <p className="text-sm text-muted-foreground mt-1">{project.category}</p>
-                          <p className="text-sm text-muted-foreground">Client: {project.client}</p>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            data-testid={`button-delete-${project.id}`}
-                            onClick={() => handleDelete(project.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    </CardHeader>
-                  </Card>
+                  <motion.div
+                    key={project.id}
+                    variants={staggerItem}
+                  >
+                    <motion.div
+                      variants={cardHover}
+                      initial="rest"
+                      whileHover="hover"
+                      style={{ perspective: "1000px" }}
+                    >
+                      <Card data-testid={`project-card-${project.id}`}>
+                        <CardHeader>
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <CardTitle className="text-lg">{project.title}</CardTitle>
+                              <p className="text-sm text-muted-foreground mt-1">{project.category}</p>
+                              <p className="text-sm text-muted-foreground">Client: {project.client}</p>
+                            </div>
+                            <div className="flex gap-2">
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                data-testid={`button-delete-${project.id}`}
+                                onClick={() => handleDelete(project.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </CardHeader>
+                      </Card>
+                    </motion.div>
+                  </motion.div>
                 ))
               )}
-            </div>
+            </motion.div>
           </TabsContent>
         </Tabs>
       </div>
