@@ -6,8 +6,15 @@ import { storage } from "./storage";
 
 const app = express();
 
+if (process.env.NODE_ENV === "production" && !process.env.SESSION_SECRET) {
+  console.error("FATAL: SESSION_SECRET must be set in production environment");
+  process.exit(1);
+}
+
+const SESSION_SECRET = process.env.SESSION_SECRET || "qatar-digital-solutions-dev-secret";
+
 app.use(session({
-  secret: process.env.SESSION_SECRET || "qatar-digital-solutions-secret-key",
+  secret: SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -397,13 +404,19 @@ async function seedData() {
 
 (async () => {
   if (!process.env.ADMIN_PASSWORD) {
-    console.error("❌ CRITICAL: ADMIN_PASSWORD environment variable must be set!");
-    console.error("   Set it in your .env file or environment variables");
-    process.exit(1);
+    if (process.env.NODE_ENV === "production") {
+      console.error("❌ CRITICAL: ADMIN_PASSWORD environment variable must be set in production!");
+      console.error("   Set it in your environment variables");
+      process.exit(1);
+    } else {
+      console.warn("⚠️  WARNING: ADMIN_PASSWORD not set. Using default 'admin123' for development.");
+      console.warn("   For production, set ADMIN_PASSWORD in environment variables.");
+      process.env.ADMIN_PASSWORD = "admin123";
+    }
   }
 
   if (!process.env.SESSION_SECRET) {
-    console.error("⚠️  WARNING: SESSION_SECRET not set, using default (not recommended for production)");
+    console.warn("⚠️  WARNING: SESSION_SECRET not set, using default (not recommended for production)");
   }
 
   const server = await registerRoutes(app);

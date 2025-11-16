@@ -16,10 +16,10 @@ export function requireAdmin(req: Request, res: Response, next: NextFunction) {
 
 export function loginAdmin(req: Request, res: Response) {
   const { password } = req.body;
-  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin123";
 
-  if (!ADMIN_PASSWORD) {
-    console.error("CRITICAL: ADMIN_PASSWORD environment variable is not set!");
+  if (process.env.NODE_ENV === "production" && !process.env.ADMIN_PASSWORD) {
+    console.error("CRITICAL: ADMIN_PASSWORD environment variable must be set in production!");
     return res.status(500).json({ success: false, message: "Server configuration error" });
   }
 

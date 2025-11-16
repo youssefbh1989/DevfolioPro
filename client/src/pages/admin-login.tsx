@@ -19,22 +19,28 @@ export default function AdminLogin() {
     setIsLoading(true);
 
     try {
-      const response: any = await apiRequest("POST", "/api/admin/login", { password });
+      console.log("[Admin Login] Attempting login with password:", password.substring(0, 3) + "***");
+      const res = await apiRequest("POST", "/api/admin/login", { password });
+      const data: any = await res.json();
+      console.log("[Admin Login] Response received:", JSON.stringify(data));
       
-      if (response.success) {
+      if (data && data.success) {
+        console.log("[Admin Login] Login successful, redirecting to /admin");
         toast({
           title: "Login successful",
           description: "Welcome to the admin dashboard",
         });
         setLocation("/admin");
       } else {
+        console.log("[Admin Login] Login failed, data:", data);
         toast({
           title: "Login failed",
-          description: response.message || "Invalid password",
+          description: data?.message || "Invalid password",
           variant: "destructive",
         });
       }
     } catch (error) {
+      console.error("[Admin Login] Error during login:", error);
       toast({
         title: "Login failed",
         description: "Invalid password. Please try again.",

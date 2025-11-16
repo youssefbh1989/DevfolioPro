@@ -20,7 +20,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { insertContactSubmissionSchema, type InsertContactSubmission } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
-import { Mail, Phone, MapPin, Send } from "lucide-react";
+import { Mail, Phone, MapPin, Send, MessageCircle } from "lucide-react";
 
 interface ContactSectionProps {
   language: "en" | "ar";
@@ -51,6 +51,7 @@ const content = {
     contactEmail: "info@qatardigital.qa",
     contactPhone: "+974 1234 5678",
     contactAddress: "Doha, Qatar",
+    whatsappCTA: "Chat on WhatsApp",
   },
   ar: {
     title: "احصل على استشارة مجانية",
@@ -76,6 +77,7 @@ const content = {
     contactEmail: "info@qatardigital.qa",
     contactPhone: "+974 1234 5678",
     contactAddress: "الدوحة، قطر",
+    whatsappCTA: "تواصل عبر واتساب",
   },
 };
 
@@ -102,7 +104,8 @@ export function ContactSection({ language }: ContactSectionProps) {
     mutationFn: async (data: InsertContactSubmission) => {
       return apiRequest("POST", "/api/contact", data);
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await apiRequest("POST", "/api/analytics/contact", {}).catch(() => {});
       toast({
         title: t.successTitle,
         description: t.successDesc,
@@ -129,6 +132,11 @@ export function ContactSection({ language }: ContactSectionProps) {
 
   const onSubmit = (data: InsertContactSubmission) => {
     submitMutation.mutate(data);
+  };
+
+  const handleWhatsAppClick = async () => {
+    await apiRequest("POST", "/api/analytics/whatsapp", {}).catch(() => {});
+    window.open("https://wa.me/97412345678", "_blank");
   };
 
   return (
@@ -323,6 +331,20 @@ export function ContactSection({ language }: ContactSectionProps) {
                     <p className="text-foreground">{t.contactAddress}</p>
                   </div>
                 </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-primary/5 border-primary/20">
+              <CardContent className="p-6">
+                <Button
+                  onClick={handleWhatsAppClick}
+                  className="w-full bg-[#25D366] hover:bg-[#20BA5A] text-white"
+                  size="lg"
+                  data-testid="button-whatsapp"
+                >
+                  <MessageCircle className="mr-2 h-5 w-5" />
+                  {t.whatsappCTA}
+                </Button>
               </CardContent>
             </Card>
           </motion.div>
