@@ -1,0 +1,69 @@
+Create a professional portfolio website for a company that develops both mobile apps and websites for Qatari businesses.
+
+COMPANY INFO:
+- Name: "Qatar Digital Solutions" (placeholder)
+- Tagline: "Mobile Apps & Websites for Qatari Business Growth"
+- Services: Mobile App Development + Website Development
+- Focus: Qatar market
+
+REQUIREMENTS:
+- Color Scheme: Maroon (#7D0B2E), Gold (#D4AF37), White, Dark Gray
+- Fully responsive (mobile-first)
+- Bilingual capability (Arabic/English toggle)
+- Modern, professional design
+
+SECTIONS:
+1. HERO: Large headline "We Build Mobile Apps & Websites for Qatari Businesses" with subheading "Complete digital solutions from idea to launch"
+   CTA buttons: "View Our Work" and "Get Free Consultation"
+
+2. SERVICES: Two main service categories:
+   MOBILE APP DEVELOPMENT:
+   - Custom iOS & Android Apps
+   - E-commerce Mobile Apps
+   - Business Utility Apps
+   - App Store Optimization
+
+   WEBSITE DEVELOPMENT:
+   - Responsive Business Websites
+   - E-commerce Websites
+   - WordPress Development
+   - Website Maintenance
+
+3. PORTFOLIO: Separate tabs for "Mobile Apps" and "Websites"
+   MOBILE APPS:
+   - Restaurant Ordering App (Qatar Cafe)
+   - E-commerce Mobile App (Doha Boutique)
+   - Service Booking App (Gulf Services)
+
+   WEBSITES:
+   - Business Website (Qatar Company)
+   - E-commerce Site (Retail Store)
+   - Booking Portal (Service Business)
+
+4. PROCESS: Our 5-step workflow:
+   - Discovery & Planning
+   - Design & Prototyping
+   - Development
+   - Testing & Quality Assurance
+   - Launch & Support
+
+5. WHY CHOOSE US:
+   - Local Qatar Market Understanding
+   - Complete Solution (Apps + Websites)
+   - Arabic/English Expertise
+   - Quick Turnaround
+   - Ongoing Support
+
+6. CONTACT: Consultation form with:
+   - Name, Company, Email, Phone
+   - Service needed: ☐ Mobile App ☐ Website ☐ Both
+   - Project description
+
+TECHNICAL:
+- HTML5, CSS3, JavaScript
+- CSS Grid/Flexbox layout
+- Responsive design
+- Fast loading optimized
+- SEO-friendly structure
+
+Include placeholder images and icons. Make it look premium and trustworthy.
