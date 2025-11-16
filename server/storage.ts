@@ -1,34 +1,21 @@
-import { type ContactSubmission, type InsertContactSubmission } from "@shared/schema";
-import { randomUUID } from "crypto";
+import { type ContactSubmission, type InsertContactSubmission, contactSubmissions } from "@shared/schema";
+import { db } from "./db";
+import { desc } from "drizzle-orm";
 
 export interface IStorage {
   createContactSubmission(submission: InsertContactSubmission): Promise<ContactSubmission>;
   getAllContactSubmissions(): Promise<ContactSubmission[]>;
 }
 
-export class MemStorage implements IStorage {
-  private contactSubmissions: Map<string, ContactSubmission>;
-
-  constructor() {
-    this.contactSubmissions = new Map();
-  }
-
+export class DbStorage implements IStorage {
   async createContactSubmission(insertSubmission: InsertContactSubmission): Promise<ContactSubmission> {
-    const id = randomUUID();
-    const submission: ContactSubmission = { 
-      ...insertSubmission, 
-      id,
-      createdAt: new Date(),
-    };
-    this.contactSubmissions.set(id, submission);
+    const [submission] = await db.insert(contactSubmissions).values(insertSubmission).returning();
     return submission;
   }
 
   async getAllContactSubmissions(): Promise<ContactSubmission[]> {
-    return Array.from(this.contactSubmissions.values()).sort(
-      (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
-    );
+    return await db.select().from(contactSubmissions).orderBy(desc(contactSubmissions.createdAt));
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DbStorage();
