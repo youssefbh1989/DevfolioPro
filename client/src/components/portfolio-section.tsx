@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink } from "lucide-react";
-import mobileAppImage from "@assets/generated_images/Mobile_app_mockup_clean_d2c9db56.png";
-import websiteImage from "@assets/generated_images/Website_laptop_mockup_elegant_a69c9d74.png";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ExternalLink, CheckCircle2 } from "lucide-react";
+import type { PortfolioProject } from "@shared/schema";
 
 interface PortfolioSectionProps {
   language: "en" | "ar";
@@ -17,16 +19,13 @@ const content = {
     mobileTab: "Mobile Apps",
     websiteTab: "Websites",
     viewDetails: "View Details",
-    mobileApps: [
-      { title: "Qatar Cafe", category: "Restaurant Ordering App", desc: "Online ordering and table booking system" },
-      { title: "Doha Boutique", category: "E-commerce Mobile App", desc: "Fashion retail mobile shopping experience" },
-      { title: "Gulf Services", category: "Service Booking App", desc: "Home services scheduling platform" },
-    ],
-    websites: [
-      { title: "Qatar Company", category: "Business Website", desc: "Corporate website with Arabic/English support" },
-      { title: "Retail Store", category: "E-commerce Site", desc: "Full-featured online shopping platform" },
-      { title: "Service Business", category: "Booking Portal", desc: "Service booking and management system" },
-    ],
+    close: "Close",
+    client: "Client",
+    challenge: "The Challenge",
+    solution: "Our Solution",
+    results: "Results",
+    technologies: "Technologies Used",
+    loading: "Loading projects...",
   },
   ar: {
     title: "أعمالنا",
@@ -34,22 +33,64 @@ const content = {
     mobileTab: "تطبيقات الجوال",
     websiteTab: "المواقع الإلكترونية",
     viewDetails: "عرض التفاصيل",
-    mobileApps: [
-      { title: "مقهى قطر", category: "تطبيق طلب مطعم", desc: "نظام طلب عبر الإنترنت وحجز الطاولات" },
-      { title: "بوتيك الدوحة", category: "تطبيق تجارة إلكترونية", desc: "تجربة تسوق أزياء عبر الجوال" },
-      { title: "خدمات الخليج", category: "تطبيق حجز خدمات", desc: "منصة جدولة الخدمات المنزلية" },
-    ],
-    websites: [
-      { title: "شركة قطر", category: "موقع أعمال", desc: "موقع شركة بدعم العربية والإنجليزية" },
-      { title: "متجر التجزئة", category: "موقع تجارة إلكترونية", desc: "منصة تسوق متكاملة عبر الإنترنت" },
-      { title: "شركة خدمات", category: "بوابة حجز", desc: "نظام حجز وإدارة الخدمات" },
-    ],
+    close: "إغلاق",
+    client: "العميل",
+    challenge: "التحدي",
+    solution: "حلنا",
+    results: "النتائج",
+    technologies: "التقنيات المستخدمة",
+    loading: "جاري تحميل المشاريع...",
   },
 };
 
 export function PortfolioSection({ language }: PortfolioSectionProps) {
   const t = content[language];
   const [activeTab, setActiveTab] = useState("mobile");
+  const [selectedProject, setSelectedProject] = useState<PortfolioProject | null>(null);
+
+  const { data: projects = [], isLoading } = useQuery<PortfolioProject[]>({
+    queryKey: ["/api/portfolio"],
+  });
+
+  const mobileProjects = projects.filter(p => p.type === "mobile");
+  const websiteProjects = projects.filter(p => p.type === "website");
+
+  const ProjectCard = ({ project }: { project: PortfolioProject }) => (
+    <Card
+      className="group hover-elevate transition-all duration-300 overflow-hidden cursor-pointer"
+      onClick={() => setSelectedProject(project)}
+      data-testid={`card-${project.type}-project-${project.id}`}
+    >
+      <div className={project.type === "mobile" ? "aspect-[3/4]" : "aspect-[4/3]"} 
+        style={{ overflow: "hidden", backgroundColor: "var(--muted)" }}>
+        <img
+          src={project.imageUrl}
+          alt={language === "ar" ? project.titleAr : project.title}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          data-testid={`img-${project.type}-project-${project.id}`}
+        />
+      </div>
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between gap-2 mb-2">
+          <CardTitle className="text-xl font-semibold" data-testid={`text-${project.type}-project-title-${project.id}`}>
+            {language === "ar" ? project.titleAr : project.title}
+          </CardTitle>
+          <ExternalLink className="h-5 w-5 text-muted-foreground shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+        </div>
+        <Badge variant="secondary" className="w-fit" data-testid={`text-${project.type}-project-category-${project.id}`}>
+          {language === "ar" ? project.categoryAr : project.category}
+        </Badge>
+      </CardHeader>
+      <CardContent>
+        <p className="text-sm text-muted-foreground" data-testid={`text-${project.type}-project-desc-${project.id}`}>
+          {language === "ar" ? project.descriptionAr : project.description}
+        </p>
+        <Button variant="ghost" size="sm" className="mt-4 w-full" data-testid={`button-view-project-${project.id}`}>
+          {t.viewDetails}
+        </Button>
+      </CardContent>
+    </Card>
+  );
 
   return (
     <section id="portfolio" className="py-20 md:py-24 bg-background">
@@ -81,72 +122,123 @@ export function PortfolioSection({ language }: PortfolioSectionProps) {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="mobile" className="mt-8">
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {t.mobileApps.map((project, index) => (
-                <Card
-                  key={index}
-                  className="group hover-elevate transition-all duration-300 overflow-hidden"
-                  data-testid={`card-mobile-project-${index}`}
-                >
-                  <div className="aspect-[3/4] overflow-hidden bg-muted">
-                    <img
-                      src={mobileAppImage}
-                      alt={project.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      data-testid={`img-mobile-project-${index}`}
-                    />
-                  </div>
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between gap-2 mb-2">
-                      <CardTitle className="text-xl font-semibold" data-testid={`text-mobile-project-title-${index}`}>{project.title}</CardTitle>
-                      <ExternalLink className="h-5 w-5 text-muted-foreground shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </div>
-                    <Badge variant="secondary" className="w-fit" data-testid={`text-mobile-project-category-${index}`}>
-                      {project.category}
-                    </Badge>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground" data-testid={`text-mobile-project-desc-${index}`}>{project.desc}</p>
-                  </CardContent>
-                </Card>
-              ))}
+          {isLoading ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">{t.loading}</p>
             </div>
-          </TabsContent>
+          ) : (
+            <>
+              <TabsContent value="mobile" className="mt-8">
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {mobileProjects.map((project) => (
+                    <ProjectCard key={project.id} project={project} />
+                  ))}
+                </div>
+              </TabsContent>
 
-          <TabsContent value="websites" className="mt-8">
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {t.websites.map((project, index) => (
-                <Card
-                  key={index}
-                  className="group hover-elevate transition-all duration-300 overflow-hidden"
-                  data-testid={`card-website-project-${index}`}
-                >
-                  <div className="aspect-[4/3] overflow-hidden bg-muted">
+              <TabsContent value="websites" className="mt-8">
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {websiteProjects.map((project) => (
+                    <ProjectCard key={project.id} project={project} />
+                  ))}
+                </div>
+              </TabsContent>
+            </>
+          )}
+        </Tabs>
+
+        <Dialog open={!!selectedProject} onOpenChange={() => setSelectedProject(null)}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto" data-testid="dialog-project-details">
+            {selectedProject && (
+              <>
+                <DialogHeader>
+                  <DialogTitle className="text-3xl font-serif" data-testid="text-modal-project-title">
+                    {language === "ar" ? selectedProject.titleAr : selectedProject.title}
+                  </DialogTitle>
+                  <Badge variant="secondary" className="w-fit mt-2">
+                    {language === "ar" ? selectedProject.categoryAr : selectedProject.category}
+                  </Badge>
+                </DialogHeader>
+
+                <div className="space-y-6 mt-6">
+                  <div className={selectedProject.type === "mobile" ? "aspect-[3/4] max-w-md mx-auto" : "aspect-[16/9]"} 
+                    style={{ overflow: "hidden", borderRadius: "0.5rem" }}>
                     <img
-                      src={websiteImage}
-                      alt={project.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      data-testid={`img-website-project-${index}`}
+                      src={selectedProject.imageUrl}
+                      alt={language === "ar" ? selectedProject.titleAr : selectedProject.title}
+                      className="w-full h-full object-cover"
+                      data-testid="img-modal-project"
                     />
                   </div>
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between gap-2 mb-2">
-                      <CardTitle className="text-xl font-semibold" data-testid={`text-website-project-title-${index}`}>{project.title}</CardTitle>
-                      <ExternalLink className="h-5 w-5 text-muted-foreground shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="font-semibold text-lg mb-2 flex items-center gap-2">
+                        <CheckCircle2 className="h-5 w-5 text-primary" />
+                        {t.client}
+                      </h3>
+                      <p className="text-muted-foreground" data-testid="text-modal-client">
+                        {language === "ar" ? selectedProject.clientAr : selectedProject.client}
+                      </p>
                     </div>
-                    <Badge variant="secondary" className="w-fit" data-testid={`text-website-project-category-${index}`}>
-                      {project.category}
-                    </Badge>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground" data-testid={`text-website-project-desc-${index}`}>{project.desc}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-        </Tabs>
+
+                    <div>
+                      <h3 className="font-semibold text-lg mb-2 flex items-center gap-2">
+                        <CheckCircle2 className="h-5 w-5 text-primary" />
+                        {t.challenge}
+                      </h3>
+                      <p className="text-muted-foreground" data-testid="text-modal-challenge">
+                        {language === "ar" ? selectedProject.challengeAr : selectedProject.challenge}
+                      </p>
+                    </div>
+
+                    <div>
+                      <h3 className="font-semibold text-lg mb-2 flex items-center gap-2">
+                        <CheckCircle2 className="h-5 w-5 text-primary" />
+                        {t.solution}
+                      </h3>
+                      <p className="text-muted-foreground" data-testid="text-modal-solution">
+                        {language === "ar" ? selectedProject.solutionAr : selectedProject.solution}
+                      </p>
+                    </div>
+
+                    <div>
+                      <h3 className="font-semibold text-lg mb-2 flex items-center gap-2">
+                        <CheckCircle2 className="h-5 w-5 text-primary" />
+                        {t.results}
+                      </h3>
+                      <p className="text-muted-foreground" data-testid="text-modal-results">
+                        {language === "ar" ? selectedProject.resultsAr : selectedProject.results}
+                      </p>
+                    </div>
+
+                    <div>
+                      <h3 className="font-semibold text-lg mb-2 flex items-center gap-2">
+                        <CheckCircle2 className="h-5 w-5 text-primary" />
+                        {t.technologies}
+                      </h3>
+                      <div className="flex flex-wrap gap-2" data-testid="list-modal-technologies">
+                        {selectedProject.technologies.map((tech, index) => (
+                          <Badge key={index} variant="outline" data-testid={`badge-technology-${index}`}>
+                            {tech}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <Button 
+                    onClick={() => setSelectedProject(null)} 
+                    className="w-full mt-6"
+                    data-testid="button-close-modal"
+                  >
+                    {t.close}
+                  </Button>
+                </div>
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </section>
   );

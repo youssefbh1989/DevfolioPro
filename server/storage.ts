@@ -1,10 +1,21 @@
-import { type ContactSubmission, type InsertContactSubmission, contactSubmissions } from "@shared/schema";
+import { 
+  type ContactSubmission, 
+  type InsertContactSubmission, 
+  contactSubmissions,
+  type PortfolioProject,
+  type InsertPortfolioProject,
+  portfolioProjects
+} from "@shared/schema";
 import { db } from "./db";
-import { desc } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 export interface IStorage {
   createContactSubmission(submission: InsertContactSubmission): Promise<ContactSubmission>;
   getAllContactSubmissions(): Promise<ContactSubmission[]>;
+  createPortfolioProject(project: InsertPortfolioProject): Promise<PortfolioProject>;
+  getAllPortfolioProjects(): Promise<PortfolioProject[]>;
+  getPortfolioProjectsByType(type: string): Promise<PortfolioProject[]>;
+  getPortfolioProjectById(id: string): Promise<PortfolioProject | undefined>;
 }
 
 export class DbStorage implements IStorage {
@@ -15,6 +26,26 @@ export class DbStorage implements IStorage {
 
   async getAllContactSubmissions(): Promise<ContactSubmission[]> {
     return await db.select().from(contactSubmissions).orderBy(desc(contactSubmissions.createdAt));
+  }
+
+  async createPortfolioProject(insertProject: InsertPortfolioProject): Promise<PortfolioProject> {
+    const [project] = await db.insert(portfolioProjects).values(insertProject).returning();
+    return project;
+  }
+
+  async getAllPortfolioProjects(): Promise<PortfolioProject[]> {
+    return await db.select().from(portfolioProjects).orderBy(desc(portfolioProjects.createdAt));
+  }
+
+  async getPortfolioProjectsByType(type: string): Promise<PortfolioProject[]> {
+    return await db.select().from(portfolioProjects)
+      .where(eq(portfolioProjects.type, type))
+      .orderBy(desc(portfolioProjects.createdAt));
+  }
+
+  async getPortfolioProjectById(id: string): Promise<PortfolioProject | undefined> {
+    const [project] = await db.select().from(portfolioProjects).where(eq(portfolioProjects.id, id));
+    return project;
   }
 }
 
