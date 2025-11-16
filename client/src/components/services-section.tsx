@@ -1,5 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Smartphone, Globe, ShoppingCart, TrendingUp, Layout, Code, Wrench } from "lucide-react";
+import { motion } from "framer-motion";
+import { useInView } from "framer-motion";
+import { useRef } from "react";
+import { staggerContainer, staggerItem } from "@/lib/animations";
 
 interface ServicesSectionProps {
   language: "en" | "ar";
@@ -54,69 +58,106 @@ const content = {
 
 export function ServicesSection({ language }: ServicesSectionProps) {
   const t = content[language];
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.2 });
 
   return (
     <section id="services" className="py-20 md:py-24 bg-muted">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
+      <div className="max-w-7xl mx-auto px-6" ref={ref}>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
           <h2 className="font-serif font-bold text-3xl md:text-5xl text-foreground mb-4" data-testid="text-services-title">
             {t.title}
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto" data-testid="text-services-subtitle">
             {t.subtitle}
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid md:grid-cols-2 gap-8 md:gap-12">
-          <div className="space-y-6">
-            <h3 className="font-serif font-semibold text-2xl md:text-3xl text-primary mb-8" data-testid="text-mobile-apps-heading">
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
+            className="space-y-6"
+          >
+            <motion.h3
+              variants={staggerItem}
+              className="font-serif font-semibold text-2xl md:text-3xl text-primary mb-8"
+              data-testid="text-mobile-apps-heading"
+            >
               {t.mobileApps.title}
-            </h3>
+            </motion.h3>
             <div className="space-y-4">
               {t.mobileApps.services.map((service, index) => (
-                <Card key={index} className="hover-elevate transition-all duration-300" data-testid={`card-mobile-service-${index}`}>
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start gap-4">
-                      <div className="rounded-md bg-primary/10 p-3 shrink-0">
-                        <service.icon className="h-6 w-6 text-primary" />
+                <motion.div key={index} variants={staggerItem}>
+                  <Card className="hover-elevate transition-all duration-300 group" data-testid={`card-mobile-service-${index}`}>
+                    <CardHeader className="pb-3">
+                      <div className="flex items-start gap-4">
+                        <motion.div
+                          whileHover={{ rotate: 360, scale: 1.1 }}
+                          transition={{ duration: 0.5 }}
+                          className="rounded-md bg-primary/10 p-3 shrink-0"
+                        >
+                          <service.icon className="h-6 w-6 text-primary" />
+                        </motion.div>
+                        <div className="flex-1">
+                          <CardTitle className="text-lg font-semibold mb-1" data-testid={`text-mobile-service-name-${index}`}>
+                            {service.name}
+                          </CardTitle>
+                          <p className="text-sm text-muted-foreground" data-testid={`text-mobile-service-desc-${index}`}>{service.desc}</p>
+                        </div>
                       </div>
-                      <div className="flex-1">
-                        <CardTitle className="text-lg font-semibold mb-1" data-testid={`text-mobile-service-name-${index}`}>
-                          {service.name}
-                        </CardTitle>
-                        <p className="text-sm text-muted-foreground" data-testid={`text-mobile-service-desc-${index}`}>{service.desc}</p>
-                      </div>
-                    </div>
-                  </CardHeader>
-                </Card>
+                    </CardHeader>
+                  </Card>
+                </motion.div>
               ))}
             </div>
-          </div>
+          </motion.div>
 
-          <div className="space-y-6">
-            <h3 className="font-serif font-semibold text-2xl md:text-3xl text-primary mb-8" data-testid="text-websites-heading">
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
+            className="space-y-6"
+          >
+            <motion.h3
+              variants={staggerItem}
+              className="font-serif font-semibold text-2xl md:text-3xl text-primary mb-8"
+              data-testid="text-websites-heading"
+            >
               {t.websites.title}
-            </h3>
+            </motion.h3>
             <div className="space-y-4">
               {t.websites.services.map((service, index) => (
-                <Card key={index} className="hover-elevate transition-all duration-300" data-testid={`card-website-service-${index}`}>
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start gap-4">
-                      <div className="rounded-md bg-accent/20 p-3 shrink-0">
-                        <service.icon className="h-6 w-6 text-accent-foreground" />
+                <motion.div key={index} variants={staggerItem}>
+                  <Card className="hover-elevate transition-all duration-300 group" data-testid={`card-website-service-${index}`}>
+                    <CardHeader className="pb-3">
+                      <div className="flex items-start gap-4">
+                        <motion.div
+                          whileHover={{ rotate: 360, scale: 1.1 }}
+                          transition={{ duration: 0.5 }}
+                          className="rounded-md bg-accent/20 p-3 shrink-0"
+                        >
+                          <service.icon className="h-6 w-6 text-accent-foreground" />
+                        </motion.div>
+                        <div className="flex-1">
+                          <CardTitle className="text-lg font-semibold mb-1" data-testid={`text-website-service-name-${index}`}>
+                            {service.name}
+                          </CardTitle>
+                          <p className="text-sm text-muted-foreground" data-testid={`text-website-service-desc-${index}`}>{service.desc}</p>
+                        </div>
                       </div>
-                      <div className="flex-1">
-                        <CardTitle className="text-lg font-semibold mb-1" data-testid={`text-website-service-name-${index}`}>
-                          {service.name}
-                        </CardTitle>
-                        <p className="text-sm text-muted-foreground" data-testid={`text-website-service-desc-${index}`}>{service.desc}</p>
-                      </div>
-                    </div>
-                  </CardHeader>
-                </Card>
+                    </CardHeader>
+                  </Card>
+                </motion.div>
               ))}
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

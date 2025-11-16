@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { ExternalLink, CheckCircle2 } from "lucide-react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
+import { staggerContainer, staggerItem } from "@/lib/animations";
 import type { PortfolioProject } from "@shared/schema";
 
 interface PortfolioSectionProps {
@@ -47,6 +49,8 @@ export function PortfolioSection({ language }: PortfolioSectionProps) {
   const t = content[language];
   const [activeTab, setActiveTab] = useState("mobile");
   const [selectedProject, setSelectedProject] = useState<PortfolioProject | null>(null);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.2 });
 
   const { data: projects = [], isLoading } = useQuery<PortfolioProject[]>({
     queryKey: ["/api/portfolio"],
@@ -56,71 +60,99 @@ export function PortfolioSection({ language }: PortfolioSectionProps) {
   const websiteProjects = projects.filter(p => p.type === "website");
 
   const ProjectCard = ({ project }: { project: PortfolioProject }) => (
-    <Card
-      className="group hover-elevate transition-all duration-300 overflow-hidden cursor-pointer"
-      onClick={() => setSelectedProject(project)}
-      data-testid={`card-${project.type}-project-${project.id}`}
+    <motion.div
+      whileHover={{ y: -8 }}
+      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
     >
-      <div className={project.type === "mobile" ? "aspect-[3/4]" : "aspect-[4/3]"} 
-        style={{ overflow: "hidden", backgroundColor: "var(--muted)" }}>
-        <img
-          src={project.imageUrl}
-          alt={language === "ar" ? project.titleAr : project.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          data-testid={`img-${project.type}-project-${project.id}`}
-        />
-      </div>
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between gap-2 mb-2">
-          <CardTitle className="text-xl font-semibold" data-testid={`text-${project.type}-project-title-${project.id}`}>
-            {language === "ar" ? project.titleAr : project.title}
-          </CardTitle>
-          <ExternalLink className="h-5 w-5 text-muted-foreground shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
-        </div>
-        <Badge variant="secondary" className="w-fit" data-testid={`text-${project.type}-project-category-${project.id}`}>
-          {language === "ar" ? project.categoryAr : project.category}
-        </Badge>
-      </CardHeader>
-      <CardContent>
-        <p className="text-sm text-muted-foreground" data-testid={`text-${project.type}-project-desc-${project.id}`}>
-          {language === "ar" ? project.descriptionAr : project.description}
-        </p>
-        <Button variant="ghost" size="sm" className="mt-4 w-full" data-testid={`button-view-project-${project.id}`}>
-          {t.viewDetails}
-        </Button>
-      </CardContent>
-    </Card>
+      <Card
+        className="group hover-elevate transition-all duration-300 overflow-hidden cursor-pointer h-full"
+        onClick={() => setSelectedProject(project)}
+        data-testid={`card-${project.type}-project-${project.id}`}
+      >
+        <motion.div
+          className={project.type === "mobile" ? "aspect-[3/4]" : "aspect-[4/3]"}
+          style={{ overflow: "hidden", backgroundColor: "var(--muted)" }}
+          whileHover={{ scale: 1.02 }}
+          transition={{ duration: 0.4 }}
+        >
+          <motion.img
+            src={project.imageUrl}
+            alt={language === "ar" ? project.titleAr : project.title}
+            className="w-full h-full object-cover"
+            whileHover={{ scale: 1.1 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            data-testid={`img-${project.type}-project-${project.id}`}
+          />
+        </motion.div>
+        <CardHeader className="pb-3">
+          <div className="flex items-start justify-between gap-2 mb-2">
+            <CardTitle className="text-xl font-semibold" data-testid={`text-${project.type}-project-title-${project.id}`}>
+              {language === "ar" ? project.titleAr : project.title}
+            </CardTitle>
+            <motion.div
+              initial={{ opacity: 0, x: -10 }}
+              whileHover={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ExternalLink className="h-5 w-5 text-muted-foreground shrink-0" />
+            </motion.div>
+          </div>
+          <Badge variant="secondary" className="w-fit" data-testid={`text-${project.type}-project-category-${project.id}`}>
+            {language === "ar" ? project.categoryAr : project.category}
+          </Badge>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground" data-testid={`text-${project.type}-project-desc-${project.id}`}>
+            {language === "ar" ? project.descriptionAr : project.description}
+          </p>
+          <Button variant="ghost" size="sm" className="mt-4 w-full" data-testid={`button-view-project-${project.id}`}>
+            {t.viewDetails}
+          </Button>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 
   return (
-    <section id="portfolio" className="py-20 md:py-24 bg-background">
+    <section id="portfolio" className="py-20 md:py-24 bg-background" ref={ref}>
       <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
           <h2 className="font-serif font-bold text-3xl md:text-5xl text-foreground mb-4" data-testid="text-portfolio-title">
             {t.title}
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto" data-testid="text-portfolio-subtitle">
             {t.subtitle}
           </p>
-        </div>
+        </motion.div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-12 h-auto">
-            <TabsTrigger
-              value="mobile"
-              className="text-base py-3 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-              data-testid="tab-mobile-apps"
-            >
-              {t.mobileTab}
-            </TabsTrigger>
-            <TabsTrigger
-              value="websites"
-              className="text-base py-3 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-              data-testid="tab-websites"
-            >
-              {t.websiteTab}
-            </TabsTrigger>
-          </TabsList>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-12 h-auto">
+              <TabsTrigger
+                value="mobile"
+                className="text-base py-3 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                data-testid="tab-mobile-apps"
+              >
+                {t.mobileTab}
+              </TabsTrigger>
+              <TabsTrigger
+                value="websites"
+                className="text-base py-3 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                data-testid="tab-websites"
+              >
+                {t.websiteTab}
+              </TabsTrigger>
+            </TabsList>
+          </motion.div>
 
           {isLoading ? (
             <div className="text-center py-12">
@@ -129,19 +161,33 @@ export function PortfolioSection({ language }: PortfolioSectionProps) {
           ) : (
             <>
               <TabsContent value="mobile" className="mt-8">
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <motion.div
+                  variants={staggerContainer}
+                  initial="hidden"
+                  animate={isInView ? "visible" : "hidden"}
+                  className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+                >
                   {mobileProjects.map((project) => (
-                    <ProjectCard key={project.id} project={project} />
+                    <motion.div key={project.id} variants={staggerItem}>
+                      <ProjectCard project={project} />
+                    </motion.div>
                   ))}
-                </div>
+                </motion.div>
               </TabsContent>
 
               <TabsContent value="websites" className="mt-8">
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <motion.div
+                  variants={staggerContainer}
+                  initial="hidden"
+                  animate={isInView ? "visible" : "hidden"}
+                  className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+                >
                   {websiteProjects.map((project) => (
-                    <ProjectCard key={project.id} project={project} />
+                    <motion.div key={project.id} variants={staggerItem}>
+                      <ProjectCard project={project} />
+                    </motion.div>
                   ))}
-                </div>
+                </motion.div>
               </TabsContent>
             </>
           )}
