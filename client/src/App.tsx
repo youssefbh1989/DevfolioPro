@@ -11,6 +11,7 @@ import About from "@/pages/about";
 import Privacy from "@/pages/privacy";
 import Careers from "@/pages/careers";
 import Blog from "@/pages/blog";
+import BlogPost from "@/pages/blog-post";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -20,6 +21,7 @@ function Router() {
       <Route path="/about" component={About} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/careers" component={Careers} />
+      <Route path="/blog/:slug" component={BlogPost} />
       <Route path="/blog" component={Blog} />
       <Route component={NotFound} />
     </Switch>
