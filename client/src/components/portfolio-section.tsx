@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { ExternalLink, CheckCircle2 } from "lucide-react";
 import type { PortfolioProject } from "@shared/schema";
 
@@ -155,6 +155,9 @@ export function PortfolioSection({ language }: PortfolioSectionProps) {
                   <DialogTitle className="text-3xl font-serif" data-testid="text-modal-project-title">
                     {language === "ar" ? selectedProject.titleAr : selectedProject.title}
                   </DialogTitle>
+                  <DialogDescription className="sr-only">
+                    {language === "ar" ? "تفاصيل المشروع الكاملة" : "Complete project details"}
+                  </DialogDescription>
                   <Badge variant="secondary" className="w-fit mt-2">
                     {language === "ar" ? selectedProject.categoryAr : selectedProject.category}
                   </Badge>

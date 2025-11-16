@@ -6,6 +6,30 @@ Qatar Digital Solutions is a professional portfolio website showcasing mobile ap
 
 The platform serves as both a marketing site and a lead generation tool, with sections for services, portfolio showcase, process workflow, value propositions, and a contact form for consultation requests.
 
+## Recent Changes and Fixes
+
+### November 16, 2025 - Testing and Bug Fixes
+**Implemented Features:**
+- ✅ Portfolio modals with detailed case studies (client, challenge, solution, results, technologies)
+- ✅ Testimonials carousel with auto-rotation (6-second intervals)
+- ✅ Database migration from in-memory to PostgreSQL
+- ✅ 6 seeded portfolio projects (3 mobile, 3 websites)
+- ✅ 6 seeded client testimonials
+
+**Bugs Fixed:**
+1. **Portfolio Modal Accessibility** - Added DialogDescription component to fix missing `aria-describedby` warning
+2. **Portfolio Images Not Loading** - Added `express.static("/attached_assets")` to serve image files correctly
+3. **Contact Form Submission** - Verified and confirmed working correctly with database persistence
+
+**Testing Completed:**
+- ✅ End-to-end portfolio modal interactions
+- ✅ Image loading in modals (mobile and website projects)
+- ✅ Language toggle (English/Arabic) with RTL layout
+- ✅ Testimonials auto-rotation and manual navigation
+- ✅ Contact form submission and validation
+- ✅ Smooth scroll navigation
+- ✅ All API endpoints functioning correctly
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
@@ -41,9 +65,11 @@ Preferred communication style: Simple, everyday language.
 **Key Features:**
 - Bilingual toggle (English/Arabic) with complete content translation
 - Smooth scrolling navigation between sections
-- Contact form with client-side validation
+- Interactive portfolio modals with detailed case studies
+- Auto-rotating testimonials carousel
+- Contact form with client-side validation and database persistence
 - Toast notifications for user feedback
-- Reusable section components (Hero, Services, Portfolio, Process, Why Choose, Contact, Footer)
+- Reusable section components (Hero, Services, Portfolio, Process, Why Choose, Testimonials, Contact, Footer)
 
 ### Backend Architecture
 
@@ -59,17 +85,26 @@ Preferred communication style: Simple, everyday language.
 
 **API Endpoints:**
 - `POST /api/contact` - Submit consultation request
-- `GET /api/contact` - Retrieve all contact submissions (admin-facing)
+- `GET /api/contact` - Retrieve all contact submissions
+- `GET /api/portfolio` - Retrieve all portfolio projects
+- `GET /api/portfolio?type=mobile` - Filter projects by type
+- `GET /api/portfolio/:id` - Get single project details
+- `POST /api/portfolio` - Create new portfolio project
+- `GET /api/testimonials` - Retrieve all testimonials
+- `GET /api/testimonials?projectType=mobile` - Filter testimonials by project type
+- `POST /api/testimonials` - Create new testimonial
 
 **Middleware:**
 - Express JSON body parser with raw body capture for webhook support
 - Custom request logging for API routes
 - URL-encoded form data support
+- Static file serving for `/attached_assets` (images, media)
 
 **Storage Layer:**
-- In-memory storage implementation (MemStorage class)
-- Interface-based design (IStorage) for easy database swapping
-- Contact submissions stored with auto-generated UUIDs and timestamps
+- PostgreSQL database with Drizzle ORM
+- Interface-based design (IStorage) for flexibility
+- Tables: contactSubmissions, portfolioProjects, testimonials
+- All records stored with UUIDs and timestamps
 
 **Development Setup:**
 - Vite integration with HMR (Hot Module Replacement)
