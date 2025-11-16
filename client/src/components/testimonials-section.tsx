@@ -52,12 +52,6 @@ export function TestimonialsSection({ language }: TestimonialsSectionProps) {
     setCurrentIndex((prev) => (prev + 1) % testimonials.length);
   };
 
-  if (isLoading || testimonials.length === 0) {
-    return null;
-  }
-
-  const currentTestimonial = testimonials[currentIndex];
-
   const getInitials = (name: string) => {
     const parts = name.split(" ");
     if (parts.length >= 2) {
@@ -83,29 +77,43 @@ export function TestimonialsSection({ language }: TestimonialsSectionProps) {
     );
   };
 
+  if (isLoading || testimonials.length === 0) {
+    return (
+      <section id="testimonials" className="py-20 md:py-24 bg-muted/30 min-h-[500px]" ref={ref}>
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="font-serif font-bold text-3xl md:text-5xl text-foreground mb-4" data-testid="text-testimonials-title">
+              {t.title}
+            </h2>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto" data-testid="text-testimonials-subtitle">
+              {t.subtitle}
+            </p>
+          </div>
+          {isLoading && (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">{language === "ar" ? "جاري التحميل..." : "Loading..."}</p>
+            </div>
+          )}
+        </div>
+      </section>
+    );
+  }
+
+  const currentTestimonial = testimonials[currentIndex];
+
   return (
-    <section id="testimonials" className="py-20 md:py-24 bg-muted/30" ref={ref}>
+    <section id="testimonials" className="py-20 md:py-24 bg-muted/30 min-h-[500px]" ref={ref}>
       <div className="max-w-7xl mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
+        <div className="text-center mb-16">
           <h2 className="font-serif font-bold text-3xl md:text-5xl text-foreground mb-4" data-testid="text-testimonials-title">
             {t.title}
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto" data-testid="text-testimonials-subtitle">
             {t.subtitle}
           </p>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={isInView ? { opacity: 1, scale: 1 } : {}}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="relative max-w-4xl mx-auto"
-        >
+        <div className="relative max-w-4xl mx-auto">
           <Card className="relative overflow-visible" data-testid="card-testimonial">
             <CardContent className="p-8 md:p-12">
               <motion.div
@@ -190,7 +198,7 @@ export function TestimonialsSection({ language }: TestimonialsSectionProps) {
               <ChevronRight className="h-5 w-5" />
             </Button>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
