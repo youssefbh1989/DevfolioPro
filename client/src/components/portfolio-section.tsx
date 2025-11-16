@@ -114,45 +114,34 @@ export function PortfolioSection({ language }: PortfolioSectionProps) {
   );
 
   return (
-    <section id="portfolio" className="py-20 md:py-24 bg-background" ref={ref}>
+    <section id="portfolio" className="py-20 md:py-24 bg-background min-h-[600px]" ref={ref}>
       <div className="max-w-7xl mx-auto px-6">
-        <motion.div
-          variants={fadeInUp}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          className="text-center mb-16"
-        >
+        <div className="text-center mb-16">
           <h2 className="font-serif font-bold text-3xl md:text-5xl text-foreground mb-4" data-testid="text-portfolio-title">
             {t.title}
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto" data-testid="text-portfolio-subtitle">
             {t.subtitle}
           </p>
-        </motion.div>
+        </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-12 h-auto">
-              <TabsTrigger
-                value="mobile"
-                className="text-base py-3 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                data-testid="tab-mobile-apps"
-              >
-                {t.mobileTab}
-              </TabsTrigger>
-              <TabsTrigger
-                value="websites"
-                className="text-base py-3 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                data-testid="tab-websites"
-              >
-                {t.websiteTab}
-              </TabsTrigger>
-            </TabsList>
-          </motion.div>
+          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-12 h-auto">
+            <TabsTrigger
+              value="mobile"
+              className="text-base py-3 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              data-testid="tab-mobile-apps"
+            >
+              {t.mobileTab}
+            </TabsTrigger>
+            <TabsTrigger
+              value="websites"
+              className="text-base py-3 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              data-testid="tab-websites"
+            >
+              {t.websiteTab}
+            </TabsTrigger>
+          </TabsList>
 
           {isLoading ? (
             <div className="text-center py-12">
@@ -161,33 +150,35 @@ export function PortfolioSection({ language }: PortfolioSectionProps) {
           ) : (
             <>
               <TabsContent value="mobile" className="mt-8">
-                <motion.div
-                  variants={staggerContainer}
-                  initial="visible"
-                  animate="visible"
-                  className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-                >
-                  {mobileProjects.map((project) => (
-                    <motion.div key={project.id} variants={staggerItem} initial="visible">
-                      <ProjectCard project={project} />
-                    </motion.div>
-                  ))}
-                </motion.div>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {mobileProjects.length > 0 ? (
+                    mobileProjects.map((project) => (
+                      <div key={project.id}>
+                        <ProjectCard project={project} />
+                      </div>
+                    ))
+                  ) : (
+                    <div className="col-span-full text-center py-12">
+                      <p className="text-muted-foreground">No mobile projects available yet.</p>
+                    </div>
+                  )}
+                </div>
               </TabsContent>
 
               <TabsContent value="websites" className="mt-8">
-                <motion.div
-                  variants={staggerContainer}
-                  initial="visible"
-                  animate="visible"
-                  className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-                >
-                  {websiteProjects.map((project) => (
-                    <motion.div key={project.id} variants={staggerItem} initial="visible">
-                      <ProjectCard project={project} />
-                    </motion.div>
-                  ))}
-                </motion.div>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {websiteProjects.length > 0 ? (
+                    websiteProjects.map((project) => (
+                      <div key={project.id}>
+                        <ProjectCard project={project} />
+                      </div>
+                    ))
+                  ) : (
+                    <div className="col-span-full text-center py-12">
+                      <p className="text-muted-foreground">No website projects available yet.</p>
+                    </div>
+                  )}
+                </div>
               </TabsContent>
             </>
           )}
