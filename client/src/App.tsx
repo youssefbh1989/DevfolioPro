@@ -13,6 +13,11 @@ import Privacy from "@/pages/privacy";
 import Careers from "@/pages/careers";
 import Blog from "@/pages/blog";
 import BlogPost from "@/pages/blog-post";
+import AdminLogin from "@/pages/admin-login";
+import AdminDashboard from "@/pages/admin-dashboard";
+import AdminProjects from "@/pages/admin-projects";
+import AdminServices from "@/pages/admin-services";
+import AdminAnalytics from "@/pages/admin-analytics";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -24,6 +29,11 @@ function Router() {
       <Route path="/careers" component={Careers} />
       <Route path="/blog/:slug" component={BlogPost} />
       <Route path="/blog" component={Blog} />
+      <Route path="/admin/login" component={AdminLogin} />
+      <Route path="/admin/projects" component={AdminProjects} />
+      <Route path="/admin/services" component={AdminServices} />
+      <Route path="/admin/analytics" component={AdminAnalytics} />
+      <Route path="/admin" component={AdminDashboard} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -1,7 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertContactSubmissionSchema, insertPortfolioProjectSchema, insertTestimonialSchema, insertBlogPostSchema, insertCareerSchema } from "@shared/schema";
+import { insertContactSubmissionSchema, insertPortfolioProjectSchema, insertTestimonialSchema, insertBlogPostSchema, insertCareerSchema, insertServiceSchema } from "@shared/schema";
+import { requireAdmin, loginAdmin, logoutAdmin, checkAdminStatus } from "./auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/contact", async (req, res) => {
@@ -149,6 +150,153 @@ export async function registerRoutes(app: Express): Promise<Server> {
         error: "Validation failed", 
         details: error.errors || error.message 
       });
+    }
+  });
+
+  app.post("/api/admin/login", loginAdmin);
+  app.post("/api/admin/logout", logoutAdmin);
+  app.get("/api/admin/status", checkAdminStatus);
+
+  app.put("/api/admin/portfolio/:id", requireAdmin, async (req, res) => {
+    try {
+      const project = await storage.updatePortfolioProject(req.params.id, req.body);
+      if (!project) {
+        res.status(404).json({ error: "Project not found" });
+        return;
+      }
+      res.json(project);
+    } catch (error: any) {
+      res.status(400).json({ error: "Update failed", details: error.message });
+    }
+  });
+
+  app.delete("/api/admin/portfolio/:id", requireAdmin, async (req, res) => {
+    try {
+      const success = await storage.deletePortfolioProject(req.params.id);
+      if (!success) {
+        res.status(404).json({ error: "Project not found" });
+        return;
+      }
+      res.json({ success: true, message: "Project deleted successfully" });
+    } catch (error: any) {
+      res.status(500).json({ error: "Delete failed", details: error.message });
+    }
+  });
+
+  app.get("/api/services", async (req, res) => {
+    try {
+      const { category } = req.query;
+      if (category && typeof category === "string") {
+        const services = await storage.getServicesByCategory(category);
+        res.json(services);
+      } else {
+        const services = await storage.getActiveServices();
+        res.json(services);
+      }
+    } catch (error: any) {
+      res.status(500).json({ error: "Failed to fetch services" });
+    }
+  });
+
+  app.get("/api/admin/services", requireAdmin, async (req, res) => {
+    try {
+      const services = await storage.getAllServices();
+      res.json(services);
+    } catch (error: any) {
+      res.status(500).json({ error: "Failed to fetch services" });
+    }
+  });
+
+  app.post("/api/admin/services", requireAdmin, async (req, res) => {
+    try {
+      const validatedData = insertServiceSchema.parse(req.body);
+      const service = await storage.createService(validatedData);
+      res.json(service);
+    } catch (error: any) {
+      res.status(400).json({ 
+        error: "Validation failed", 
+        details: error.errors || error.message 
+      });
+    }
+  });
+
+  app.put("/api/admin/services/:id", requireAdmin, async (req, res) => {
+    try {
+      const service = await storage.updateService(req.params.id, req.body);
+      if (!service) {
+        res.status(404).json({ error: "Service not found" });
+        return;
+      }
+      res.json(service);
+    } catch (error: any) {
+      res.status(400).json({ error: "Update failed", details: error.message });
+    }
+  });
+
+  app.delete("/api/admin/services/:id", requireAdmin, async (req, res) => {
+    try {
+      const success = await storage.deleteService(req.params.id);
+      if (!success) {
+        res.status(404).json({ error: "Service not found" });
+        return;
+      }
+      res.json({ success: true, message: "Service deleted successfully" });
+    } catch (error: any) {
+      res.status(500).json({ error: "Delete failed", details: error.message });
+    }
+  });
+
+  app.post("/api/analytics/pageview", async (req, res) => {
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      await storage.incrementPageViews(today);
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(500).json({ error: "Failed to track pageview" });
+    }
+  });
+
+  app.post("/api/analytics/whatsapp", async (req, res) => {
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      await storage.incrementWhatsappClicks(today);
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(500).json({ error: "Failed to track WhatsApp click" });
+    }
+  });
+
+  app.post("/api/analytics/contact", async (req, res) => {
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      await storage.incrementContactSubmissions(today);
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(500).json({ error: "Failed to track contact submission" });
+    }
+  });
+
+  app.get("/api/admin/analytics", requireAdmin, async (req, res) => {
+    try {
+      const { startDate, endDate } = req.query;
+      if (startDate && endDate && typeof startDate === "string" && typeof endDate === "string") {
+        const analytics = await storage.getAnalyticsByDateRange(startDate, endDate);
+        res.json(analytics);
+      } else {
+        const analytics = await storage.getAllAnalytics();
+        res.json(analytics);
+      }
+    } catch (error: any) {
+      res.status(500).json({ error: "Failed to fetch analytics" });
+    }
+  });
+
+  app.get("/api/admin/contact", requireAdmin, async (req, res) => {
+    try {
+      const submissions = await storage.getAllContactSubmissions();
+      res.json(submissions);
+    } catch (error: any) {
+      res.status(500).json({ error: "Failed to fetch contact submissions" });
     }
   });
 

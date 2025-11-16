@@ -1,8 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Smartphone, Globe, ShoppingCart, TrendingUp, Layout, Code, Wrench } from "lucide-react";
+import { Smartphone, Globe, ShoppingCart, TrendingUp, Layout, Code, Wrench, Check } from "lucide-react";
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
+import type { Service } from "@shared/schema";
 import { staggerContainer, staggerItem } from "@/lib/animations";
 
 interface ServicesSectionProps {
@@ -61,6 +63,13 @@ export function ServicesSection({ language }: ServicesSectionProps) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.2 });
 
+  const { data: services, isLoading } = useQuery<Service[]>({
+    queryKey: ["/api/services"],
+  });
+
+  const mobileServices = services?.filter(s => s.category === "mobile") || [];
+  const websiteServices = services?.filter(s => s.category === "website") || [];
+
   return (
     <section id="services" className="py-20 md:py-24 bg-muted">
       <div className="max-w-7xl mx-auto px-6" ref={ref}>
@@ -93,29 +102,54 @@ export function ServicesSection({ language }: ServicesSectionProps) {
               {t.mobileApps.title}
             </motion.h3>
             <div className="space-y-4">
-              {t.mobileApps.services.map((service, index) => (
-                <motion.div key={index} variants={staggerItem}>
-                  <Card className="hover-elevate transition-all duration-300 group" data-testid={`card-mobile-service-${index}`}>
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start gap-4">
-                        <motion.div
-                          whileHover={{ rotate: 360, scale: 1.1 }}
-                          transition={{ duration: 0.5 }}
-                          className="rounded-md bg-primary/10 p-3 shrink-0"
-                        >
-                          <service.icon className="h-6 w-6 text-primary" />
-                        </motion.div>
-                        <div className="flex-1">
-                          <CardTitle className="text-lg font-semibold mb-1" data-testid={`text-mobile-service-name-${index}`}>
-                            {service.name}
-                          </CardTitle>
-                          <p className="text-sm text-muted-foreground" data-testid={`text-mobile-service-desc-${index}`}>{service.desc}</p>
+              {isLoading ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-gray-100 mx-auto"></div>
+                </div>
+              ) : mobileServices.length === 0 ? (
+                <Card>
+                  <CardContent className="py-8 text-center text-muted-foreground">
+                    No mobile app services available
+                  </CardContent>
+                </Card>
+              ) : (
+                mobileServices.map((service, index) => (
+                  <motion.div key={service.id} variants={staggerItem}>
+                    <Card className="hover-elevate transition-all duration-300 group" data-testid={`card-mobile-service-${index}`}>
+                      <CardHeader className="pb-3">
+                        <div className="flex items-start gap-4">
+                          <motion.div
+                            whileHover={{ rotate: 360, scale: 1.1 }}
+                            transition={{ duration: 0.5 }}
+                            className="rounded-md bg-primary/10 p-3 shrink-0"
+                          >
+                            <Smartphone className="h-6 w-6 text-primary" />
+                          </motion.div>
+                          <div className="flex-1">
+                            <CardTitle className="text-lg font-semibold mb-1" data-testid={`text-mobile-service-name-${index}`}>
+                              {language === "ar" ? service.nameAr : service.name}
+                            </CardTitle>
+                            <p className="text-sm text-muted-foreground mb-2" data-testid={`text-mobile-service-desc-${index}`}>
+                              {language === "ar" ? service.descriptionAr : service.description}
+                            </p>
+                            <p className="text-sm font-semibold" style={{ color: "#D4AF37" }}>
+                              {language === "ar" ? service.priceAr : service.price}
+                            </p>
+                            <ul className="mt-3 space-y-1">
+                              {(language === "ar" ? service.featuresAr : service.features).slice(0, 3).map((feature, idx) => (
+                                <li key={idx} className="text-xs text-muted-foreground flex items-start gap-2">
+                                  <Check className="h-3 w-3 text-primary shrink-0 mt-0.5" />
+                                  <span>{feature}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
                         </div>
-                      </div>
-                    </CardHeader>
-                  </Card>
-                </motion.div>
-              ))}
+                      </CardHeader>
+                    </Card>
+                  </motion.div>
+                ))
+              )}
             </div>
           </motion.div>
 
@@ -133,29 +167,54 @@ export function ServicesSection({ language }: ServicesSectionProps) {
               {t.websites.title}
             </motion.h3>
             <div className="space-y-4">
-              {t.websites.services.map((service, index) => (
-                <motion.div key={index} variants={staggerItem}>
-                  <Card className="hover-elevate transition-all duration-300 group" data-testid={`card-website-service-${index}`}>
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start gap-4">
-                        <motion.div
-                          whileHover={{ rotate: 360, scale: 1.1 }}
-                          transition={{ duration: 0.5 }}
-                          className="rounded-md bg-accent/20 p-3 shrink-0"
-                        >
-                          <service.icon className="h-6 w-6 text-accent-foreground" />
-                        </motion.div>
-                        <div className="flex-1">
-                          <CardTitle className="text-lg font-semibold mb-1" data-testid={`text-website-service-name-${index}`}>
-                            {service.name}
-                          </CardTitle>
-                          <p className="text-sm text-muted-foreground" data-testid={`text-website-service-desc-${index}`}>{service.desc}</p>
+              {isLoading ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-gray-100 mx-auto"></div>
+                </div>
+              ) : websiteServices.length === 0 ? (
+                <Card>
+                  <CardContent className="py-8 text-center text-muted-foreground">
+                    No website services available
+                  </CardContent>
+                </Card>
+              ) : (
+                websiteServices.map((service, index) => (
+                  <motion.div key={service.id} variants={staggerItem}>
+                    <Card className="hover-elevate transition-all duration-300 group" data-testid={`card-website-service-${index}`}>
+                      <CardHeader className="pb-3">
+                        <div className="flex items-start gap-4">
+                          <motion.div
+                            whileHover={{ rotate: 360, scale: 1.1 }}
+                            transition={{ duration: 0.5 }}
+                            className="rounded-md bg-accent/20 p-3 shrink-0"
+                          >
+                            <Globe className="h-6 w-6 text-accent-foreground" />
+                          </motion.div>
+                          <div className="flex-1">
+                            <CardTitle className="text-lg font-semibold mb-1" data-testid={`text-website-service-name-${index}`}>
+                              {language === "ar" ? service.nameAr : service.name}
+                            </CardTitle>
+                            <p className="text-sm text-muted-foreground mb-2" data-testid={`text-website-service-desc-${index}`}>
+                              {language === "ar" ? service.descriptionAr : service.description}
+                            </p>
+                            <p className="text-sm font-semibold" style={{ color: "#D4AF37" }}>
+                              {language === "ar" ? service.priceAr : service.price}
+                            </p>
+                            <ul className="mt-3 space-y-1">
+                              {(language === "ar" ? service.featuresAr : service.features).slice(0, 3).map((feature, idx) => (
+                                <li key={idx} className="text-xs text-muted-foreground flex items-start gap-2">
+                                  <Check className="h-3 w-3 text-primary shrink-0 mt-0.5" />
+                                  <span>{feature}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
                         </div>
-                      </div>
-                    </CardHeader>
-                  </Card>
-                </motion.div>
-              ))}
+                      </CardHeader>
+                    </Card>
+                  </motion.div>
+                ))
+              )}
             </div>
           </motion.div>
         </div>

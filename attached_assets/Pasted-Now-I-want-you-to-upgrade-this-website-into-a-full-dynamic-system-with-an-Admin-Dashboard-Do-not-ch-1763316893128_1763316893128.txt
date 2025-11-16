@@ -1,0 +1,96 @@
+Now I want you to upgrade this website into a full dynamic system with an Admin Dashboard. Do not change my existing design, colors, layout, or content. Only add what is necessary to make everything dynamic. Follow these exact requirements:
+1. Create an Admin Dashboard (admin.html)
+Keep the same Qatar color palette (maroon, gold, white, dark gray)
+Admin login screen with password from .env variable (ADMIN_PASSWORD)
+After login, show 3 sections:
+Manage Portfolio Projects
+Separate tabs: “Mobile Apps” and “Websites”
+Add / Edit / Delete projects
+Each project has: title, category, image URL, and link
+Manage Services & Pricing Packages
+Add / Edit / Delete service packages
+Fields: name, description, price
+Analytics Dashboard
+Daily visitors
+Contact form submissions
+WhatsApp button clicks
+Display using Chart.js
+2. Add a Backend API using Node.js + Express
+Create a new folder called backend/ with these endpoints:
+Public Endpoints
+GET /api/projects → return mobile + website projects
+GET /api/services → return service packages
+POST /api/contact → send consultation form data to email + log analytics event
+POST /api/analytics/whatsapp → increment WhatsApp click count
+GET /api/analytics/visitors → return visitor count
+Admin Endpoints (require password)
+POST /api/admin/projects (add project)
+DELETE /api/admin/projects (delete project)
+POST /api/admin/services (add service package)
+DELETE /api/admin/services (delete package)
+GET /api/admin/analytics (full analytics dashboard data)
+Backend must use:
+express
+cors
+dotenv
+JSON storage files (no database)
+3. Add JSON Storage Files
+Inside a new data/ folder:
+projects.json
+services.json
+analytics.json
+Structure example:
+{
+  "projects": [],
+  "services": [],
+  "analytics": {
+    "2025-01-01": { "visitors": 0, "whatsapp": 0, "contacts": 0 }
+  }
+}
+4. Update Existing Frontend
+Modify my current pages ONLY where required:
+Portfolio Section
+Load “Mobile Apps” dynamically from /api/projects?category=mobile
+Load “Websites” from /api/projects?category=web
+Services Section
+Load service list from /api/services
+Contact Form
+On submit:
+POST to /api/contact
+Show success message
+Track WhatsApp clicks via /api/analytics/whatsapp
+Arabic/English toggle must continue working.
+5. DO NOT Change My Design
+Keep all layout exactly unchanged
+Maintain my color palette
+Keep my fonts and spacing
+Keep the hero section and all content
+Only add IDs/classes needed to make sections dynamic
+6. Show Me The Final Folder Structure
+Example:
+/frontend
+   index.html
+   admin.html
+   style.css
+   script.js
+   admin.js
+
+/backend
+   index.js
+   package.json
+   .env.example
+
+/data
+   projects.json
+   services.json
+   analytics.json
+7. Tell Me Where Each File Should Be Pasted
+Explain which files belong in frontend, backend, data, and which need modifying.
+8. After Upgrading
+Tell me:
+How to start the backend
+How to test the admin dashboard
+How to log in
+How data is saved
+How analytics works
+Make sure nothing from my original UI is removed or redesigned. Only enhance it with full admin + backend capabilities.”

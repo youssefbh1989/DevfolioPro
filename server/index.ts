@@ -1,9 +1,21 @@
 import express, { type Request, Response, NextFunction } from "express";
+import session from "express-session";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { storage } from "./storage";
 
 const app = express();
+
+app.use(session({
+  secret: process.env.SESSION_SECRET || "qatar-digital-solutions-secret-key",
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === "production",
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+}));
 
 declare module 'http' {
   interface IncomingMessage {
@@ -233,9 +245,167 @@ async function seedData() {
     }
     log("✅ Seeded careers");
   }
+
+  const existingServices = await storage.getAllServices();
+  if (existingServices.length === 0) {
+    const services = [
+      {
+        name: "Startup Mobile App",
+        nameAr: "تطبيق جوال للشركات الناشئة",
+        description: "Perfect for startups and small businesses looking to launch their first mobile app",
+        descriptionAr: "مثالي للشركات الناشئة والصغيرة التي تتطلع إلى إطلاق تطبيق الجوال الأول",
+        price: "Starting from 15,000 QAR",
+        priceAr: "ابتداءً من 15,000 ريال قطري",
+        category: "mobile",
+        features: [
+          "iOS & Android development",
+          "Basic backend integration",
+          "Push notifications",
+          "3 months support",
+          "App Store submission"
+        ],
+        featuresAr: [
+          "تطوير iOS و Android",
+          "تكامل خادم أساسي",
+          "إشعارات فورية",
+          "دعم لمدة 3 أشهر",
+          "تقديم في متجر التطبيقات"
+        ],
+        isActive: true,
+        displayOrder: 1
+      },
+      {
+        name: "Enterprise Mobile App",
+        nameAr: "تطبيق جوال للمؤسسات",
+        description: "Full-featured mobile applications for established businesses with complex requirements",
+        descriptionAr: "تطبيقات جوال كاملة المواصفات للشركات الراسخة ذات المتطلبات المعقدة",
+        price: "Starting from 45,000 QAR",
+        priceAr: "ابتداءً من 45,000 ريال قطري",
+        category: "mobile",
+        features: [
+          "Advanced iOS & Android development",
+          "Custom backend & API",
+          "Real-time features",
+          "Analytics & reporting",
+          "12 months premium support",
+          "Security & encryption"
+        ],
+        featuresAr: [
+          "تطوير iOS و Android متقدم",
+          "خادم وAPI مخصص",
+          "ميزات الوقت الفعلي",
+          "التحليلات والتقارير",
+          "دعم مميز لمدة 12 شهرًا",
+          "الأمان والتشفير"
+        ],
+        isActive: true,
+        displayOrder: 2
+      },
+      {
+        name: "Business Website",
+        nameAr: "موقع أعمال",
+        description: "Professional website to establish your online presence and attract customers",
+        descriptionAr: "موقع احترافي لتأسيس وجودك على الإنترنت وجذب العملاء",
+        price: "Starting from 8,000 QAR",
+        priceAr: "ابتداءً من 8,000 ريال قطري",
+        category: "website",
+        features: [
+          "Responsive design",
+          "Up to 10 pages",
+          "Contact form integration",
+          "Arabic & English support",
+          "SEO optimization",
+          "3 months support"
+        ],
+        featuresAr: [
+          "تصميم متجاوب",
+          "حتى 10 صفحات",
+          "تكامل نموذج الاتصال",
+          "دعم العربية والإنجليزية",
+          "تحسين محركات البحث",
+          "دعم لمدة 3 أشهر"
+        ],
+        isActive: true,
+        displayOrder: 3
+      },
+      {
+        name: "E-commerce Website",
+        nameAr: "موقع تجارة إلكترونية",
+        description: "Complete online store with payment processing and inventory management",
+        descriptionAr: "متجر إلكتروني كامل مع معالجة المدفوعات وإدارة المخزون",
+        price: "Starting from 25,000 QAR",
+        priceAr: "ابتداءً من 25,000 ريال قطري",
+        category: "website",
+        features: [
+          "Product catalog",
+          "Shopping cart & checkout",
+          "Payment gateway integration",
+          "Order management system",
+          "Arabic & English support",
+          "Analytics dashboard",
+          "6 months support"
+        ],
+        featuresAr: [
+          "كتالوج المنتجات",
+          "عربة التسوق والدفع",
+          "تكامل بوابة الدفع",
+          "نظام إدارة الطلبات",
+          "دعم العربية والإنجليزية",
+          "لوحة التحليلات",
+          "دعم لمدة 6 أشهر"
+        ],
+        isActive: true,
+        displayOrder: 4
+      },
+      {
+        name: "Custom Web Application",
+        nameAr: "تطبيق ويب مخصص",
+        description: "Tailored web applications built to solve your specific business needs",
+        descriptionAr: "تطبيقات ويب مصممة خصيصًا لحل احتياجات عملك المحددة",
+        price: "Starting from 35,000 QAR",
+        priceAr: "ابتداءً من 35,000 ريال قطري",
+        category: "website",
+        features: [
+          "Custom functionality",
+          "Database design",
+          "API development",
+          "User authentication",
+          "Admin dashboard",
+          "Cloud hosting setup",
+          "12 months support"
+        ],
+        featuresAr: [
+          "وظائف مخصصة",
+          "تصميم قاعدة البيانات",
+          "تطوير API",
+          "مصادقة المستخدم",
+          "لوحة الإدارة",
+          "إعداد الاستضافة السحابية",
+          "دعم لمدة 12 شهرًا"
+        ],
+        isActive: true,
+        displayOrder: 5
+      }
+    ];
+
+    for (const service of services) {
+      await storage.createService(service);
+    }
+    log("✅ Seeded services");
+  }
 }
 
 (async () => {
+  if (!process.env.ADMIN_PASSWORD) {
+    console.error("❌ CRITICAL: ADMIN_PASSWORD environment variable must be set!");
+    console.error("   Set it in your .env file or environment variables");
+    process.exit(1);
+  }
+
+  if (!process.env.SESSION_SECRET) {
+    console.error("⚠️  WARNING: SESSION_SECRET not set, using default (not recommended for production)");
+  }
+
   const server = await registerRoutes(app);
   
   // Seed initial data
