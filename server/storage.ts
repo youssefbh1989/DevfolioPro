@@ -7,7 +7,13 @@ import {
   portfolioProjects,
   type Testimonial,
   type InsertTestimonial,
-  testimonials
+  testimonials,
+  type BlogPost,
+  type InsertBlogPost,
+  blogPosts,
+  type Career,
+  type InsertCareer,
+  careers
 } from "@shared/schema";
 import { db } from "./db";
 import { desc, eq } from "drizzle-orm";
@@ -22,6 +28,12 @@ export interface IStorage {
   createTestimonial(testimonial: InsertTestimonial): Promise<Testimonial>;
   getAllTestimonials(): Promise<Testimonial[]>;
   getTestimonialsByProjectType(projectType: string): Promise<Testimonial[]>;
+  createBlogPost(post: InsertBlogPost): Promise<BlogPost>;
+  getAllBlogPosts(): Promise<BlogPost[]>;
+  getBlogPostBySlug(slug: string): Promise<BlogPost | undefined>;
+  createCareer(career: InsertCareer): Promise<Career>;
+  getAllCareers(): Promise<Career[]>;
+  getOpenCareers(): Promise<Career[]>;
 }
 
 export class DbStorage implements IStorage {
@@ -67,6 +79,35 @@ export class DbStorage implements IStorage {
     return await db.select().from(testimonials)
       .where(eq(testimonials.projectType, projectType))
       .orderBy(desc(testimonials.createdAt));
+  }
+
+  async createBlogPost(insertPost: InsertBlogPost): Promise<BlogPost> {
+    const [post] = await db.insert(blogPosts).values(insertPost).returning();
+    return post;
+  }
+
+  async getAllBlogPosts(): Promise<BlogPost[]> {
+    return await db.select().from(blogPosts).orderBy(desc(blogPosts.publishedAt));
+  }
+
+  async getBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
+    const [post] = await db.select().from(blogPosts).where(eq(blogPosts.slug, slug));
+    return post;
+  }
+
+  async createCareer(insertCareer: InsertCareer): Promise<Career> {
+    const [career] = await db.insert(careers).values(insertCareer).returning();
+    return career;
+  }
+
+  async getAllCareers(): Promise<Career[]> {
+    return await db.select().from(careers).orderBy(desc(careers.createdAt));
+  }
+
+  async getOpenCareers(): Promise<Career[]> {
+    return await db.select().from(careers)
+      .where(eq(careers.status, "open"))
+      .orderBy(desc(careers.createdAt));
   }
 }
 

@@ -75,9 +75,61 @@ export const insertTestimonialSchema = createInsertSchema(testimonials).omit({
   rating: z.string().regex(/^[1-5]$/, "Rating must be between 1 and 5"),
 });
 
+export const blogPosts = pgTable("blog_posts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  titleAr: text("title_ar").notNull(),
+  slug: text("slug").notNull().unique(),
+  excerpt: text("excerpt").notNull(),
+  excerptAr: text("excerpt_ar").notNull(),
+  content: text("content").notNull(),
+  contentAr: text("content_ar").notNull(),
+  category: text("category").notNull(),
+  categoryAr: text("category_ar").notNull(),
+  author: text("author").notNull(),
+  authorAr: text("author_ar").notNull(),
+  imageUrl: text("image_url").notNull(),
+  publishedAt: timestamp("published_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const careers = pgTable("careers", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  titleAr: text("title_ar").notNull(),
+  department: text("department").notNull(),
+  departmentAr: text("department_ar").notNull(),
+  location: text("location").notNull(),
+  locationAr: text("location_ar").notNull(),
+  type: text("type").notNull(), // "full-time", "part-time", "contract"
+  typeAr: text("type_ar").notNull(),
+  description: text("description").notNull(),
+  descriptionAr: text("description_ar").notNull(),
+  requirements: text("requirements").array().notNull(),
+  requirementsAr: text("requirements_ar").array().notNull(),
+  responsibilities: text("responsibilities").array().notNull(),
+  responsibilitiesAr: text("responsibilities_ar").array().notNull(),
+  status: text("status").notNull().default("open"), // "open" or "closed"
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertBlogPostSchema = createInsertSchema(blogPosts).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertCareerSchema = createInsertSchema(careers).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type InsertContactSubmission = z.infer<typeof insertContactSubmissionSchema>;
 export type ContactSubmission = typeof contactSubmissions.$inferSelect;
 export type InsertPortfolioProject = z.infer<typeof insertPortfolioProjectSchema>;
 export type PortfolioProject = typeof portfolioProjects.$inferSelect;
 export type InsertTestimonial = z.infer<typeof insertTestimonialSchema>;
 export type Testimonial = typeof testimonials.$inferSelect;
+export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;
+export type BlogPost = typeof blogPosts.$inferSelect;
+export type InsertCareer = z.infer<typeof insertCareerSchema>;
+export type Career = typeof careers.$inferSelect;
