@@ -137,6 +137,21 @@ Reusable animation presets for consistent motion design:
 - Icons: Subtle hover scale (1.1)
 - Connecting Lines: Draw animation on scroll
 
+**Why Choose Section**:
+- Container: Stagger animation with 0.1s delay between items
+- Cards: Fade in with upward slide (20px) using staggerItem variant on scroll
+- Icons: No scroll-triggered scale animation
+- Hover (desktop only): Icon container rotates 360° and scales to 1.1 (0.5s duration)
+- No animated number counters (static text content)
+
+**Navigation/Header**:
+- Sticky header with shadow appearing on scroll
+- Smooth scroll behavior between sections (scroll-behavior: smooth)
+- Desktop navigation links: Underline fade animation on hover
+- Mobile menu: Shadcn Drawer component slides in from right with easing
+- Language toggle: Instant content swap (no transition animation)
+- Scroll progress indicator: Animated progress bar (if implemented)
+
 ### Accessibility
 
 **Reduced Motion Support**:
@@ -149,17 +164,22 @@ Implementation:
 - **SSR Safety**: Hook includes window guard for server-side rendering compatibility
 
 When reduced motion is enabled:
-- All scroll-triggered animations are disabled
-- Hover effects are minimized
-- Carousel auto-rotation stops
-- Continuous animations (floating, pulsing) are paused
+- **Disabled**: All scroll-triggered entrance animations (initial/animate variants)
+- **Disabled**: Testimonials carousel auto-rotation
+- **Disabled**: Mobile drawer slide animation (instant open/close instead)
+- **Persists**: Hover and tap interactions (scale, rotate on user interaction)
+- **Persists**: Continuous keyframe animations (floating, pulsing, hero button hover)
+
+**Known Limitation**: 
+Per-component hover/tap animations and continuous decorative animations currently persist when reduced motion is enabled. This is because MotionConfig only disables initial/animate variants, not whileHover or continuous animate variants. For stricter reduced motion compliance, these effects would need conditional gating using the useReducedMotion hook.
 
 **Best Practices**:
-- Use MotionConfig for global motion control
-- All animations trigger once on scroll (once: true)
+- Use MotionConfig for global motion control of entrance/exit animations
+- All scroll animations trigger once (once: true) to prevent repeated distractions
 - Animations never cause layout shifts
-- Interactive animations are subtle (scale: 1.03 maximum)
-- Continuous animations are reserved for decorative elements only
+- Interactive hover animations are subtle (scale: 1.03-1.1 maximum)
+- Continuous animations reserved for decorative elements only
+- For full reduced motion compliance, gate hover/continuous animations with useReducedMotion hook
 
 ### RTL Animation Behavior
 All animations work seamlessly in RTL mode:
