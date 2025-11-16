@@ -1,5 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MapPin, Layers, Languages, Zap, Headphones } from "lucide-react";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
+import { staggerContainer, staggerItem } from "@/lib/animations";
 
 interface WhyChooseSectionProps {
   language: "en" | "ar";
@@ -72,40 +75,57 @@ const content = {
 
 export function WhyChooseSection({ language }: WhyChooseSectionProps) {
   const t = content[language];
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.2 });
 
   return (
-    <section id="why-us" className="py-20 md:py-24 bg-background">
+    <section id="why-us" className="py-20 md:py-24 bg-background" ref={ref}>
       <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
           <h2 className="font-serif font-bold text-3xl md:text-5xl text-foreground mb-4" data-testid="text-why-choose-title">
             {t.title}
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto" data-testid="text-why-choose-subtitle">
             {t.subtitle}
           </p>
-        </div>
+        </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto"
+        >
           {t.reasons.map((reason, index) => (
-            <Card
-              key={index}
-              className="hover-elevate transition-all duration-300"
-              data-testid={`card-reason-${index}`}
-            >
-              <CardHeader className="pb-4">
-                <div className="mb-4">
-                  <div className="w-14 h-14 rounded-md bg-primary/10 flex items-center justify-center">
-                    <reason.icon className="h-7 w-7 text-primary" />
-                  </div>
-                </div>
-                <CardTitle className="text-xl font-semibold" data-testid={`text-reason-title-${index}`}>{reason.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground leading-relaxed" data-testid={`text-reason-desc-${index}`}>{reason.desc}</p>
-              </CardContent>
-            </Card>
+            <motion.div key={index} variants={staggerItem}>
+              <Card
+                className="hover-elevate transition-all duration-300 h-full group"
+                data-testid={`card-reason-${index}`}
+              >
+                <CardHeader className="pb-4">
+                  <motion.div
+                    className="mb-4"
+                    whileHover={{ scale: 1.1, rotate: 360 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <div className="w-14 h-14 rounded-md bg-primary/10 flex items-center justify-center">
+                      <reason.icon className="h-7 w-7 text-primary" />
+                    </div>
+                  </motion.div>
+                  <CardTitle className="text-xl font-semibold" data-testid={`text-reason-title-${index}`}>{reason.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground leading-relaxed" data-testid={`text-reason-desc-${index}`}>{reason.desc}</p>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

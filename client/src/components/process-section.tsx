@@ -1,5 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Lightbulb, Palette, Code2, TestTube, Rocket } from "lucide-react";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
+import { staggerContainer, staggerItem } from "@/lib/animations";
 
 interface ProcessSectionProps {
   language: "en" | "ar";
@@ -72,32 +75,53 @@ const content = {
 
 export function ProcessSection({ language }: ProcessSectionProps) {
   const t = content[language];
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.2 });
 
   return (
-    <section id="process" className="py-20 md:py-24 bg-muted">
+    <section id="process" className="py-20 md:py-24 bg-muted" ref={ref}>
       <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
           <h2 className="font-serif font-bold text-3xl md:text-5xl text-foreground mb-4" data-testid="text-process-title">
             {t.title}
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto" data-testid="text-process-subtitle">
             {t.subtitle}
           </p>
-        </div>
+        </motion.div>
 
-        <div className="grid md:grid-cols-5 gap-6 md:gap-4 max-w-6xl mx-auto">
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          className="grid md:grid-cols-5 gap-6 md:gap-4 max-w-6xl mx-auto"
+        >
           {t.steps.map((step, index) => (
-            <div key={index} className="relative" data-testid={`step-${index}`}>
-              <Card className="hover-elevate transition-all duration-300 h-full">
+            <motion.div key={index} variants={staggerItem} className="relative" data-testid={`step-${index}`}>
+              <Card className="hover-elevate transition-all duration-300 h-full group">
                 <CardContent className="p-6 text-center flex flex-col items-center">
-                  <div className="mb-4 relative">
+                  <motion.div
+                    className="mb-4 relative"
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    transition={{ duration: 0.3 }}
+                  >
                     <div className="w-16 h-16 rounded-full bg-accent flex items-center justify-center">
                       <step.icon className="h-8 w-8 text-accent-foreground" />
                     </div>
-                    <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={isInView ? { scale: 1 } : {}}
+                      transition={{ delay: 0.4 + index * 0.1, type: "spring", stiffness: 200 }}
+                      className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm"
+                    >
                       {index + 1}
-                    </div>
-                  </div>
+                    </motion.div>
+                  </motion.div>
                   <h3 className="font-serif font-semibold text-lg mb-2 text-foreground" data-testid={`text-step-title-${index}`}>
                     {step.title}
                   </h3>
@@ -107,11 +131,16 @@ export function ProcessSection({ language }: ProcessSectionProps) {
                 </CardContent>
               </Card>
               {index < t.steps.length - 1 && (
-                <div className="hidden md:block absolute top-1/2 -right-2 transform translate-x-full -translate-y-1/2 w-4 h-0.5 bg-border" />
+                <motion.div
+                  initial={{ scaleX: 0 }}
+                  animate={isInView ? { scaleX: 1 } : {}}
+                  transition={{ delay: 0.6 + index * 0.1, duration: 0.5 }}
+                  className="hidden md:block absolute top-1/2 -right-2 transform translate-x-full -translate-y-1/2 w-4 h-0.5 bg-border origin-left"
+                />
               )}
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

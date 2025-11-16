@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Star, Quote } from "lucide-react";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 import type { Testimonial } from "@shared/schema";
 
 interface TestimonialsSectionProps {
@@ -24,6 +25,8 @@ const content = {
 export function TestimonialsSection({ language }: TestimonialsSectionProps) {
   const t = content[language];
   const [currentIndex, setCurrentIndex] = useState(0);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.2 });
 
   const { data: testimonials = [], isLoading } = useQuery<Testimonial[]>({
     queryKey: ["/api/testimonials"],
@@ -79,30 +82,54 @@ export function TestimonialsSection({ language }: TestimonialsSectionProps) {
   };
 
   return (
-    <section id="testimonials" className="py-20 md:py-24 bg-muted/30">
+    <section id="testimonials" className="py-20 md:py-24 bg-muted/30" ref={ref}>
       <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
           <h2 className="font-serif font-bold text-3xl md:text-5xl text-foreground mb-4" data-testid="text-testimonials-title">
             {t.title}
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto" data-testid="text-testimonials-subtitle">
             {t.subtitle}
           </p>
-        </div>
+        </motion.div>
 
-        <div className="relative max-w-4xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={isInView ? { opacity: 1, scale: 1 } : {}}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="relative max-w-4xl mx-auto"
+        >
           <Card className="relative overflow-visible" data-testid="card-testimonial">
             <CardContent className="p-8 md:p-12">
-              <Quote className="absolute top-8 left-8 h-12 w-12 text-primary/20" />
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1 }}
+              >
+                <Quote className="absolute top-8 left-8 h-12 w-12 text-primary/20" />
+              </motion.div>
 
-              <div className="relative z-10">
-                {renderStars(currentTestimonial.rating)}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentIndex}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                  className="relative z-10"
+                >
+                  {renderStars(currentTestimonial.rating)}
 
-                <blockquote className="mt-6 text-lg md:text-xl text-foreground leading-relaxed" data-testid="text-testimonial-content">
-                  "{language === "ar" ? currentTestimonial.testimonialAr : currentTestimonial.testimonial}"
-                </blockquote>
+                  <blockquote className="mt-6 text-lg md:text-xl text-foreground leading-relaxed" data-testid="text-testimonial-content">
+                    "{language === "ar" ? currentTestimonial.testimonialAr : currentTestimonial.testimonial}"
+                  </blockquote>
 
-                <div className="flex items-center gap-4 mt-8">
+                  <div className="flex items-center gap-4 mt-8">
                   <Avatar className="h-14 w-14" data-testid="avatar-testimonial">
                     <AvatarFallback className="bg-primary text-primary-foreground text-lg font-semibold">
                       {getInitials(language === "ar" ? currentTestimonial.clientNameAr : currentTestimonial.clientName)}
@@ -120,7 +147,8 @@ export function TestimonialsSection({ language }: TestimonialsSectionProps) {
                     </p>
                   </div>
                 </div>
-              </div>
+                </motion.div>
+              </AnimatePresence>
             </CardContent>
           </Card>
 
@@ -160,7 +188,7 @@ export function TestimonialsSection({ language }: TestimonialsSectionProps) {
               <ChevronRight className="h-5 w-5" />
             </Button>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

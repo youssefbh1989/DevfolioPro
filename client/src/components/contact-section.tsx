@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { motion, useInView } from "framer-motion";
+import { staggerContainer, staggerItem } from "@/lib/animations";
 import {
   Form,
   FormControl,
@@ -81,6 +83,8 @@ export function ContactSection({ language }: ContactSectionProps) {
   const t = content[language];
   const { toast } = useToast();
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.2 });
 
   const form = useForm<InsertContactSubmission>({
     resolver: zodResolver(insertContactSubmissionSchema),
@@ -128,19 +132,29 @@ export function ContactSection({ language }: ContactSectionProps) {
   };
 
   return (
-    <section id="contact" className="py-20 md:py-24 bg-muted">
+    <section id="contact" className="py-20 md:py-24 bg-muted" ref={ref}>
       <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
           <h2 className="font-serif font-bold text-3xl md:text-5xl text-foreground mb-4" data-testid="text-contact-title">
             {t.title}
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto" data-testid="text-contact-subtitle">
             {t.subtitle}
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          <div className="lg:col-span-2">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="lg:col-span-2"
+          >
             <Card>
               <CardHeader>
                 <CardTitle className="text-2xl font-serif" data-testid="text-form-title">{t.formTitle}</CardTitle>
@@ -275,9 +289,14 @@ export function ContactSection({ language }: ContactSectionProps) {
                 </Form>
               </CardContent>
             </Card>
-          </div>
+          </motion.div>
 
-          <div className="space-y-6">
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="space-y-6"
+          >
             <Card>
               <CardHeader>
                 <CardTitle className="text-xl font-serif">{t.contactInfo}</CardTitle>
@@ -306,7 +325,7 @@ export function ContactSection({ language }: ContactSectionProps) {
                 </div>
               </CardContent>
             </Card>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
