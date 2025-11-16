@@ -73,7 +73,99 @@
 - 4-column layout (Services, Company, Contact, Social) - stack mobile
 - Dark gray background, white text
 - Gold social icons
-- Newsletter signup with gold accent
+
+## Animation System
+
+### Animation Library
+The site uses **Framer Motion** for all animations, providing smooth, performant, and accessible transitions.
+
+### Animation Variants (client/src/lib/animations.ts)
+Reusable animation presets for consistent motion design:
+
+- **fadeInUp**: Fade in with upward slide (60px) - used for section headers
+- **fadeIn**: Simple opacity fade - used for background elements
+- **scaleIn**: Fade in with subtle scale (0.9 → 1) - used for cards appearing
+- **slideInLeft**: Slide in from left (-60px) - used for LTR content
+- **slideInRight**: Slide in from right (60px) - used for RTL content
+- **staggerContainer**: Container for staggered children animations
+- **staggerItem**: Individual item in stagger sequence (0.1s delay between items)
+- **floatingAnimation**: Continuous subtle floating motion (±10px over 6s)
+- **pulseGlow**: Continuous pulsing opacity effect (0.6 ↔ 1 over 2s)
+
+### Animation Timing
+- **Duration**: 0.5-0.8 seconds for most transitions
+- **Easing**: Custom cubic-bezier [0.22, 1, 0.36, 1] for premium feel
+- **Stagger Delay**: 0.1-0.15 seconds between items
+- **Scroll Trigger**: once: true, amount: 0.2-0.3 (trigger when 20-30% visible)
+
+### Component-Specific Animations
+
+**Hero Section**:
+- Background: Scale in from 1.1 to 1 with fade (1.5s duration)
+- Headline: Fade in from bottom with sequential word appearance
+- CTA Buttons: Slide up with 0.4s delay
+- Gradient Overlay: Fade in over 1s
+
+**Service Cards**:
+- Container: Stagger animation with 0.1s delay between cards
+- Cards: Fade in with upward slide (20px)
+- Icons: Rotate 360° on hover (0.5s duration)
+- Hover: Scale to 1.03 with smooth transition
+
+**Portfolio Cards**:
+- Grid: Stagger container with progressive reveal
+- Cards: Fade in with upward slide
+- Hover: Scale to 1.05, enhanced shadow
+- Images: Scale to 1.1 on card hover
+- Modal: Fade in with scale (0.95 → 1), backdrop blur
+
+**Testimonials Carousel**:
+- Slide Transitions: AnimatePresence with fade + vertical slide
+- Auto-rotation: 6-second intervals (paused on reduced motion)
+- Navigation: Smooth slide animation between testimonials
+- Quote Icon: Subtle pulse glow effect
+
+**Contact Section**:
+- Form: Slide in from left with fade (-30px)
+- Contact Info: Slide in from right with fade (30px)
+- Heading: Fade in from top (30px)
+- Stagger delay: 0.2s between form and info
+
+**Process Timeline**:
+- Steps: Stagger animation with 0.15s delay
+- Numbers: Scale in with rotation
+- Icons: Subtle hover scale (1.1)
+- Connecting Lines: Draw animation on scroll
+
+### Accessibility
+
+**Reduced Motion Support**:
+The application respects user preferences for reduced motion via `prefers-reduced-motion` media query.
+
+Implementation:
+- **Global Config**: `MotionConfig` in App.tsx applies reduced motion settings to all animations
+- **useReducedMotion Hook**: Detects user preference and listens for changes
+- **Auto-play**: Testimonials carousel auto-rotation pauses when reduced motion is preferred
+- **SSR Safety**: Hook includes window guard for server-side rendering compatibility
+
+When reduced motion is enabled:
+- All scroll-triggered animations are disabled
+- Hover effects are minimized
+- Carousel auto-rotation stops
+- Continuous animations (floating, pulsing) are paused
+
+**Best Practices**:
+- Use MotionConfig for global motion control
+- All animations trigger once on scroll (once: true)
+- Animations never cause layout shifts
+- Interactive animations are subtle (scale: 1.03 maximum)
+- Continuous animations are reserved for decorative elements only
+
+### RTL Animation Behavior
+All animations work seamlessly in RTL mode:
+- Slide directions are axis-neutral (y-axis transformations)
+- Horizontal slides use relative positioning that respects text direction
+- Stagger animations maintain correct visual flow in Arabic
 
 ## Images Strategy
 

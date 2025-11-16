@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Star, Quote } from "lucide-react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import type { Testimonial } from "@shared/schema";
 
 interface TestimonialsSectionProps {
@@ -27,20 +28,21 @@ export function TestimonialsSection({ language }: TestimonialsSectionProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.2 });
+  const prefersReducedMotion = useReducedMotion();
 
   const { data: testimonials = [], isLoading } = useQuery<Testimonial[]>({
     queryKey: ["/api/testimonials"],
   });
 
   useEffect(() => {
-    if (testimonials.length === 0) return;
+    if (testimonials.length === 0 || prefersReducedMotion) return;
 
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % testimonials.length);
     }, 6000);
 
     return () => clearInterval(interval);
-  }, [testimonials.length]);
+  }, [testimonials.length, prefersReducedMotion]);
 
   const handlePrevious = () => {
     setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
