@@ -107,6 +107,16 @@ Qatar Digital Solutions is a bilingual (English/Arabic) professional portfolio w
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 
+## Postponed Features
+- **WhatsApp AI Chatbot** (November 17, 2025): User requested a fully automated bilingual (Arabic/English) AI chatbot for WhatsApp to:
+  - Answer questions about services
+  - Collect customer information
+  - Schedule consultations
+  - Provide pricing information
+  - Respond automatically 24/7
+  - Technical approach: Twilio for WhatsApp Business API + OpenAI/Replit AI for responses
+  - Status: Feature postponed - user will request when ready to implement
+
 ## System Architecture
 
 ### Frontend
