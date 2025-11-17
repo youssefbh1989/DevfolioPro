@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { ExternalLink, CheckCircle2 } from "lucide-react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { staggerContainer, staggerItem, cardHover, fadeInUp } from "@/lib/animations";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import type { PortfolioProject } from "@shared/schema";
 
 interface PortfolioSectionProps {
@@ -51,6 +52,7 @@ export function PortfolioSection({ language }: PortfolioSectionProps) {
   const [selectedProject, setSelectedProject] = useState<PortfolioProject | null>(null);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
+  const prefersReducedMotion = useReducedMotion();
 
   const { data: projects = [], isLoading } = useQuery<PortfolioProject[]>({
     queryKey: ["/api/portfolio"],
@@ -60,12 +62,12 @@ export function PortfolioSection({ language }: PortfolioSectionProps) {
   const websiteProjects = projects.filter(p => p.type === "website");
 
   const ProjectCard = ({ project }: { project: PortfolioProject }) => (
-    <div style={{ perspective: "1000px" }}>
+    <div style={{ perspective: prefersReducedMotion ? "none" : "1000px" }}>
       <motion.div
-        variants={cardHover}
+        variants={prefersReducedMotion ? {} : cardHover}
         initial="rest"
-        whileHover="hover"
-        style={{ transformStyle: "preserve-3d" }}
+        whileHover={prefersReducedMotion ? undefined : "hover"}
+        style={{ transformStyle: prefersReducedMotion ? "flat" : "preserve-3d" }}
       >
         <Card
           className="group transition-all duration-300 overflow-visible cursor-pointer h-full hover-elevate border-l-4 border-l-primary/30"
@@ -80,7 +82,7 @@ export function PortfolioSection({ language }: PortfolioSectionProps) {
             src={project.imageUrl}
             alt={language === "ar" ? project.titleAr : project.title}
             className="w-full h-full object-cover"
-            whileHover={{ scale: 1.12 }}
+            whileHover={prefersReducedMotion ? undefined : { scale: 1.12 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             data-testid={`img-${project.type}-project-${project.id}`}
           />
@@ -91,8 +93,8 @@ export function PortfolioSection({ language }: PortfolioSectionProps) {
               {language === "ar" ? project.titleAr : project.title}
             </CardTitle>
             <motion.div
-              initial={{ opacity: 0, x: -10 }}
-              whileHover={{ opacity: 1, x: 0 }}
+              initial={prefersReducedMotion ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
+              whileHover={prefersReducedMotion ? undefined : { opacity: 1, x: 0 }}
               transition={{ duration: 0.3 }}
             >
               <ExternalLink className="h-5 w-5 text-muted-foreground shrink-0" />
@@ -133,7 +135,7 @@ export function PortfolioSection({ language }: PortfolioSectionProps) {
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto" data-testid="text-portfolio-subtitle">
             {t.subtitle}
           </p>
-        </div>
+        </motion.div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-12 h-auto">

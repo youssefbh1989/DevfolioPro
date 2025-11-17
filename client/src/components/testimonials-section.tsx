@@ -102,27 +102,41 @@ export function TestimonialsSection({ language }: TestimonialsSectionProps) {
   const currentTestimonial = testimonials[currentIndex];
 
   return (
-    <section id="testimonials" className="py-20 md:py-24 bg-muted/30 min-h-[500px]" ref={ref}>
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <h2 className="font-serif font-bold text-3xl md:text-5xl text-foreground mb-4" data-testid="text-testimonials-title">
+    <section id="testimonials" className="relative py-20 md:py-24 bg-gradient-to-b from-muted/30 to-background min-h-[500px] overflow-hidden" ref={ref}>
+      {/* Decorative elements */}
+      <div className="absolute top-40 left-0 w-72 h-72 bg-accent/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-20 right-0 w-96 h-96 bg-primary/5 rotate-12 blur-3xl" />
+      
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        <motion.div 
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="font-serif font-bold text-3xl md:text-5xl text-primary mb-4" data-testid="text-testimonials-title">
             {t.title}
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto" data-testid="text-testimonials-subtitle">
             {t.subtitle}
           </p>
-        </div>
+        </motion.div>
 
-        <div className="relative max-w-4xl mx-auto">
-          <Card className="relative overflow-visible" data-testid="card-testimonial">
-            <CardContent className="p-8 md:p-12">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1 }}
-              >
-                <Quote className="absolute top-8 left-8 h-12 w-12 text-primary/20" />
-              </motion.div>
+        <div className="relative max-w-4xl mx-auto" style={{ perspective: prefersReducedMotion ? "none" : "1000px" }}>
+          <motion.div
+            whileHover={prefersReducedMotion ? undefined : { scale: 1.02, rotateX: -2 }}
+            transition={{ duration: 0.3 }}
+            style={{ transformStyle: prefersReducedMotion ? "flat" : "preserve-3d" }}
+          >
+            <Card className="relative overflow-visible border-l-4 border-l-primary/30 shadow-xl shadow-primary/10" data-testid="card-testimonial">
+              <CardContent className="p-8 md:p-12">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 1 }}
+                >
+                  <Quote className="absolute top-8 left-8 h-12 w-12 text-accent/30" />
+                </motion.div>
 
               <AnimatePresence mode="wait">
                 <motion.div
@@ -160,14 +174,15 @@ export function TestimonialsSection({ language }: TestimonialsSectionProps) {
                 </motion.div>
               </AnimatePresence>
             </CardContent>
-          </Card>
+            </Card>
+          </motion.div>
 
           <div className="flex items-center justify-center gap-4 mt-8">
             <Button
               variant="outline"
               size="icon"
               onClick={handlePrevious}
-              className="rounded-full"
+              className="rounded-full hover:bg-primary/10 hover:border-primary border-2"
               data-testid="button-previous"
             >
               <ChevronLeft className="h-5 w-5" />
@@ -180,8 +195,8 @@ export function TestimonialsSection({ language }: TestimonialsSectionProps) {
                   onClick={() => setCurrentIndex(index)}
                   className={`h-2 rounded-full transition-all ${
                     index === currentIndex
-                      ? "w-8 bg-primary"
-                      : "w-2 bg-muted-foreground/30 hover-elevate"
+                      ? "w-8 bg-gradient-to-r from-primary to-accent"
+                      : "w-2 bg-muted-foreground/30 hover:bg-primary/50"
                   }`}
                   data-testid={`dot-${index}`}
                 />
@@ -192,7 +207,7 @@ export function TestimonialsSection({ language }: TestimonialsSectionProps) {
               variant="outline"
               size="icon"
               onClick={handleNext}
-              className="rounded-full"
+              className="rounded-full hover:bg-primary/10 hover:border-primary border-2"
               data-testid="button-next"
             >
               <ChevronRight className="h-5 w-5" />

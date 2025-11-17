@@ -62,52 +62,52 @@ export function Navigation() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-background/95 backdrop-blur-md shadow-sm" : "bg-transparent"
+        scrolled ? "bg-gradient-to-r from-primary via-primary/95 to-primary backdrop-blur-md shadow-lg shadow-primary/20" : "bg-gradient-to-r from-primary/95 via-primary/90 to-primary/95 backdrop-blur-md"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between h-20 gap-4">
           <div className="flex-shrink-0">
-            <Link href="/" className="font-serif font-bold text-xl md:text-2xl text-primary hover-elevate active-elevate-2 transition-colors" data-testid="link-logo">
+            <Link href="/" className="font-serif font-bold text-xl md:text-2xl text-background hover:text-accent transition-all" data-testid="link-logo">
               {t.logo}
             </Link>
           </div>
 
           <nav className="hidden lg:flex items-center gap-1">
-            <Link href="/" className="px-4 py-2 text-foreground hover-elevate active-elevate-2 rounded-md transition-all font-medium text-sm" data-testid="link-home">
+            <Link href="/" className="px-4 py-2 text-background hover:text-accent rounded-md transition-colors font-medium text-sm" data-testid="link-home">
               {t.home}
             </Link>
-            <Link href="/about" className="px-4 py-2 text-foreground hover-elevate active-elevate-2 rounded-md transition-all font-medium text-sm" data-testid="link-about">
+            <Link href="/about" className="px-4 py-2 text-background hover:text-accent rounded-md transition-colors font-medium text-sm" data-testid="link-about">
               {t.about}
             </Link>
             {isHomePage && (
               <>
                 <button
                   onClick={() => scrollToSection("services")}
-                  className="px-4 py-2 text-foreground hover-elevate active-elevate-2 rounded-md transition-all font-medium text-sm"
+                  className="px-4 py-2 text-background hover:text-accent rounded-md transition-colors font-medium text-sm"
                   data-testid="link-services"
                 >
                   {t.services}
                 </button>
                 <button
                   onClick={() => scrollToSection("portfolio")}
-                  className="px-4 py-2 text-foreground hover-elevate active-elevate-2 rounded-md transition-all font-medium text-sm"
+                  className="px-4 py-2 text-background hover:text-accent rounded-md transition-colors font-medium text-sm"
                   data-testid="link-portfolio"
                 >
                   {t.portfolio}
                 </button>
               </>
             )}
-            <Link href="/blog" className="px-4 py-2 text-foreground hover-elevate active-elevate-2 rounded-md transition-all font-medium text-sm" data-testid="link-blog">
+            <Link href="/blog" className="px-4 py-2 text-background hover:text-accent rounded-md transition-colors font-medium text-sm" data-testid="link-blog">
               {t.blog}
             </Link>
-            <Link href="/careers" className="px-4 py-2 text-foreground hover-elevate active-elevate-2 rounded-md transition-all font-medium text-sm" data-testid="link-careers">
+            <Link href="/careers" className="px-4 py-2 text-background hover:text-accent rounded-md transition-colors font-medium text-sm" data-testid="link-careers">
               {t.careers}
             </Link>
             {isHomePage && (
               <button
                 onClick={() => scrollToSection("contact")}
-                className="px-4 py-2 text-foreground hover-elevate active-elevate-2 rounded-md transition-all font-medium text-sm"
+                className="px-4 py-2 text-background hover:text-accent rounded-md transition-colors font-medium text-sm"
                 data-testid="link-contact"
               >
                 {t.contact}
@@ -123,22 +123,23 @@ export function Navigation() {
                   size="icon"
                   data-testid="button-language-toggle"
                   aria-label="Change language"
+                  className="text-background hover:text-accent"
                 >
                   <Languages className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="bg-primary border-primary-foreground/20">
                 <DropdownMenuItem
                   onClick={() => setLanguage("en")}
                   data-testid="option-language-en"
-                  className={language === "en" ? "bg-accent" : ""}
+                  className={language === "en" ? "bg-accent text-accent-foreground" : "text-background hover:bg-accent/20"}
                 >
                   English
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => setLanguage("ar")}
                   data-testid="option-language-ar"
-                  className={language === "ar" ? "bg-accent" : ""}
+                  className={language === "ar" ? "bg-accent text-accent-foreground" : "text-background hover:bg-accent/20"}
                 >
                   العربية
                 </DropdownMenuItem>
@@ -147,7 +148,7 @@ export function Navigation() {
 
             <Button
               onClick={() => scrollToSection("contact")}
-              className="hidden md:inline-flex"
+              className="hidden md:inline-flex bg-accent hover:bg-accent/90 text-accent-foreground border-2 border-accent"
               data-testid="button-nav-cta"
             >
               {t.getStarted}
@@ -156,7 +157,7 @@ export function Navigation() {
             <Button
               variant="ghost"
               size="icon"
-              className="lg:hidden"
+              className="lg:hidden text-background hover:text-accent"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               data-testid="button-mobile-menu"
               aria-label="Toggle menu"
@@ -168,12 +169,12 @@ export function Navigation() {
       </div>
 
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t bg-background/95 backdrop-blur-md">
+        <div className="lg:hidden border-t border-accent/30 bg-gradient-to-b from-primary/95 to-primary/90 backdrop-blur-md">
           <nav className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-2">
             <Link
               href="/"
               onClick={() => setMobileMenuOpen(false)}
-              className="px-4 py-3 text-left hover-elevate active-elevate-2 rounded-md transition-all font-medium w-full"
+              className="px-4 py-3 text-left hover-elevate active-elevate-2 rounded-md transition-all font-medium w-full text-background/90 hover:text-accent"
               data-testid="link-mobile-home"
             >
               {t.home}
@@ -181,7 +182,7 @@ export function Navigation() {
             <Link
               href="/about"
               onClick={() => setMobileMenuOpen(false)}
-              className="px-4 py-3 text-left hover-elevate active-elevate-2 rounded-md transition-all font-medium w-full"
+              className="px-4 py-3 text-left hover-elevate active-elevate-2 rounded-md transition-all font-medium w-full text-background/90 hover:text-accent"
               data-testid="link-mobile-about"
             >
               {t.about}
@@ -193,7 +194,7 @@ export function Navigation() {
                     scrollToSection("services");
                     setMobileMenuOpen(false);
                   }}
-                  className="px-4 py-3 text-left hover-elevate active-elevate-2 rounded-md transition-all font-medium w-full"
+                  className="px-4 py-3 text-left hover-elevate active-elevate-2 rounded-md transition-all font-medium w-full text-background/90 hover:text-accent"
                   data-testid="link-mobile-services"
                 >
                   {t.services}
@@ -203,7 +204,7 @@ export function Navigation() {
                     scrollToSection("portfolio");
                     setMobileMenuOpen(false);
                   }}
-                  className="px-4 py-3 text-left hover-elevate active-elevate-2 rounded-md transition-all font-medium w-full"
+                  className="px-4 py-3 text-left hover-elevate active-elevate-2 rounded-md transition-all font-medium w-full text-background/90 hover:text-accent"
                   data-testid="link-mobile-portfolio"
                 >
                   {t.portfolio}
@@ -213,7 +214,7 @@ export function Navigation() {
             <Link
               href="/blog"
               onClick={() => setMobileMenuOpen(false)}
-              className="px-4 py-3 text-left hover-elevate active-elevate-2 rounded-md transition-all font-medium w-full"
+              className="px-4 py-3 text-left hover-elevate active-elevate-2 rounded-md transition-all font-medium w-full text-background/90 hover:text-accent"
               data-testid="link-mobile-blog"
             >
               {t.blog}
@@ -221,7 +222,7 @@ export function Navigation() {
             <Link
               href="/careers"
               onClick={() => setMobileMenuOpen(false)}
-              className="px-4 py-3 text-left hover-elevate active-elevate-2 rounded-md transition-all font-medium w-full"
+              className="px-4 py-3 text-left hover-elevate active-elevate-2 rounded-md transition-all font-medium w-full text-background/90 hover:text-accent"
               data-testid="link-mobile-careers"
             >
               {t.careers}
@@ -232,7 +233,7 @@ export function Navigation() {
                   scrollToSection("contact");
                   setMobileMenuOpen(false);
                 }}
-                className="mt-2"
+                className="mt-2 bg-accent hover:bg-accent/90 text-accent-foreground"
                 data-testid="button-mobile-cta"
               >
                 {t.getStarted}
