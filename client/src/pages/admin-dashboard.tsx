@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { LayoutDashboard, Package, FolderKanban, BarChart, LogOut } from "lucide-react";
+import { LayoutDashboard, Package, FolderKanban, BarChart, LogOut, Users } from "lucide-react";
 import { motion } from "framer-motion";
 import { fadeInUp, staggerContainer, staggerItem, cardHover, magneticHover } from "@/lib/animations";
 
@@ -160,6 +160,32 @@ export default function AdminDashboard() {
                     <CardTitle>Analytics</CardTitle>
                     <CardDescription>
                       View site analytics and metrics
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </motion.div>
+            </Link>
+          </motion.div>
+
+          <motion.div variants={staggerItem}>
+            <Link href="/admin/job-applications" data-testid="link-admin-job-applications">
+              <motion.div
+                variants={cardHover}
+                initial="rest"
+                whileHover="hover"
+              >
+                <Card className="cursor-pointer transition-all">
+                  <CardHeader>
+                    <motion.div
+                      className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center mb-4"
+                      whileHover={{ rotate: [0, -5, 5, 0], scale: 1.1 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <Users className="h-6 w-6 text-primary-foreground" />
+                    </motion.div>
+                    <CardTitle>Job Applications</CardTitle>
+                    <CardDescription>
+                      Review and manage career applications
                     </CardDescription>
                   </CardHeader>
                 </Card>

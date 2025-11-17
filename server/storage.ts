@@ -19,7 +19,11 @@ import {
   services,
   type Analytics,
   type InsertAnalytics,
-  analytics
+  analytics,
+  type JobApplication,
+  type InsertJobApplication,
+  jobApplications,
+  type JobApplicationStatus
 } from "@shared/schema";
 import { db } from "./db";
 import { desc, eq, sql } from "drizzle-orm";
@@ -55,6 +59,10 @@ export interface IStorage {
   incrementContactSubmissions(date: string): Promise<void>;
   getAnalyticsByDateRange(startDate: string, endDate: string): Promise<Analytics[]>;
   getAllAnalytics(): Promise<Analytics[]>;
+  createJobApplication(application: InsertJobApplication): Promise<JobApplication>;
+  getAllJobApplications(): Promise<JobApplication[]>;
+  getJobApplicationsByCareer(careerId: string): Promise<JobApplication[]>;
+  updateJobApplicationStatus(id: string, status: JobApplicationStatus): Promise<JobApplication | undefined>;
 }
 
 export class DbStorage implements IStorage {
@@ -236,6 +244,29 @@ export class DbStorage implements IStorage {
 
   async getAllAnalytics(): Promise<Analytics[]> {
     return await db.select().from(analytics).orderBy(desc(analytics.date));
+  }
+
+  async createJobApplication(insertApplication: InsertJobApplication): Promise<JobApplication> {
+    const [application] = await db.insert(jobApplications).values(insertApplication).returning();
+    return application;
+  }
+
+  async getAllJobApplications(): Promise<JobApplication[]> {
+    return await db.select().from(jobApplications).orderBy(desc(jobApplications.createdAt));
+  }
+
+  async getJobApplicationsByCareer(careerId: string): Promise<JobApplication[]> {
+    return await db.select().from(jobApplications)
+      .where(eq(jobApplications.careerId, careerId))
+      .orderBy(desc(jobApplications.createdAt));
+  }
+
+  async updateJobApplicationStatus(id: string, status: JobApplicationStatus): Promise<JobApplication | undefined> {
+    const [application] = await db.update(jobApplications)
+      .set({ status })
+      .where(eq(jobApplications.id, id))
+      .returning();
+    return application;
   }
 }
 

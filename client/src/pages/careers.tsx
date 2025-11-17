@@ -1,15 +1,25 @@
 import { motion, useInView } from "framer-motion";
-import { useRef, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useRef, useEffect, useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Briefcase, Clock } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { MapPin, Briefcase, Clock, Send } from "lucide-react";
 import { staggerContainer, staggerItem } from "@/lib/animations";
-import type { Career } from "@shared/schema";
+import type { Career, InsertJobApplication } from "@shared/schema";
+import { insertJobApplicationSchema } from "@shared/schema";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 const content = {
   en: {
@@ -33,6 +43,25 @@ const content = {
     department: "Department",
     requirements: "Requirements",
     responsibilities: "Responsibilities",
+    applicationForm: {
+      title: "Apply for this Position",
+      fullName: "Full Name",
+      email: "Email Address",
+      phone: "Phone Number",
+      yearsOfExperience: "Years of Experience",
+      selectYears: "Select years",
+      coverLetter: "Cover Letter",
+      coverLetterPlaceholder: "Tell us why you're a great fit for this role...",
+      resumeUrl: "Resume URL (optional)",
+      linkedinUrl: "LinkedIn Profile (optional)",
+      portfolioUrl: "Portfolio URL (optional)",
+      submit: "Submit Application",
+      submitting: "Submitting...",
+      successTitle: "Application Submitted!",
+      successDesc: "We'll review your application and get back to you soon.",
+      errorTitle: "Error",
+      errorDesc: "Failed to submit application. Please try again.",
+    },
   },
   ar: {
     title: "انضم إلى فريقنا",
@@ -55,14 +84,83 @@ const content = {
     department: "القسم",
     requirements: "المتطلبات",
     responsibilities: "المسؤوليات",
+    applicationForm: {
+      title: "قدم طلبك لهذه الوظيفة",
+      fullName: "الاسم الكامل",
+      email: "البريد الإلكتروني",
+      phone: "رقم الهاتف",
+      yearsOfExperience: "سنوات الخبرة",
+      selectYears: "اختر السنوات",
+      coverLetter: "خطاب التقديم",
+      coverLetterPlaceholder: "أخبرنا لماذا أنت مناسب لهذا الدور...",
+      resumeUrl: "رابط السيرة الذاتية (اختياري)",
+      linkedinUrl: "ملف LinkedIn الشخصي (اختياري)",
+      portfolioUrl: "رابط محفظة الأعمال (اختياري)",
+      submit: "إرسال الطلب",
+      submitting: "جارٍ الإرسال...",
+      successTitle: "تم إرسال الطلب!",
+      successDesc: "سنقوم بمراجعة طلبك والرد عليك قريباً.",
+      errorTitle: "خطأ",
+      errorDesc: "فشل إرسال الطلب. يرجى المحاولة مرة أخرى.",
+    },
   },
 };
 
 export default function Careers() {
   const { language } = useLanguage();
   const t = content[language];
+  const { toast } = useToast();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.2 });
+  const [selectedCareer, setSelectedCareer] = useState<Career | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const form = useForm<InsertJobApplication>({
+    resolver: zodResolver(insertJobApplicationSchema),
+    defaultValues: {
+      careerId: "",
+      fullName: "",
+      email: "",
+      phone: "",
+      coverLetter: "",
+      resumeUrl: "",
+      linkedinUrl: "",
+      portfolioUrl: "",
+      yearsOfExperience: "",
+    },
+  });
+
+  const submitMutation = useMutation({
+    mutationFn: async (data: InsertJobApplication) => {
+      return await apiRequest("POST", "/api/job-applications", data);
+    },
+    onSuccess: () => {
+      toast({
+        title: t.applicationForm.successTitle,
+        description: t.applicationForm.successDesc,
+      });
+      form.reset();
+      setIsDialogOpen(false);
+      setSelectedCareer(null);
+    },
+    onError: () => {
+      toast({
+        title: t.applicationForm.errorTitle,
+        description: t.applicationForm.errorDesc,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleApplyClick = (career: Career) => {
+    setSelectedCareer(career);
+    form.setValue("careerId", career.id);
+    setIsDialogOpen(true);
+  };
+
+  const onSubmit = (data: InsertJobApplication) => {
+    submitMutation.mutate(data);
+  };
 
   useEffect(() => {
     document.documentElement.dir = language === "ar" ? "rtl" : "ltr";
@@ -187,7 +285,10 @@ export default function Careers() {
                             </Badge>
                           </div>
                         </div>
-                        <Button data-testid={`button-apply-${index}`}>
+                        <Button 
+                          onClick={() => handleApplyClick(career)}
+                          data-testid={`button-apply-${index}`}
+                        >
                           {t.apply}
                         </Button>
                       </div>
@@ -226,6 +327,182 @@ export default function Careers() {
           )}
         </div>
       </section>
+
+      {/* Application Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-serif text-primary">
+              {t.applicationForm.title}
+            </DialogTitle>
+            {selectedCareer && (
+              <p className="text-muted-foreground">
+                {language === "ar" ? selectedCareer.titleAr : selectedCareer.title}
+              </p>
+            )}
+          </DialogHeader>
+
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mt-4">
+              <div className="grid md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="fullName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t.applicationForm.fullName}</FormLabel>
+                      <FormControl>
+                        <Input {...field} data-testid="input-full-name" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t.applicationForm.email}</FormLabel>
+                      <FormControl>
+                        <Input type="email" {...field} data-testid="input-email" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t.applicationForm.phone}</FormLabel>
+                      <FormControl>
+                        <Input {...field} data-testid="input-phone" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="yearsOfExperience"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t.applicationForm.yearsOfExperience}</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger data-testid="select-years-experience">
+                            <SelectValue placeholder={t.applicationForm.selectYears} />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="0-1">0-1 {language === "ar" ? "سنة" : "years"}</SelectItem>
+                          <SelectItem value="1-3">1-3 {language === "ar" ? "سنوات" : "years"}</SelectItem>
+                          <SelectItem value="3-5">3-5 {language === "ar" ? "سنوات" : "years"}</SelectItem>
+                          <SelectItem value="5-10">5-10 {language === "ar" ? "سنوات" : "years"}</SelectItem>
+                          <SelectItem value="10+">10+ {language === "ar" ? "سنوات" : "years"}</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="coverLetter"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t.applicationForm.coverLetter}</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        rows={6}
+                        placeholder={t.applicationForm.coverLetterPlaceholder}
+                        data-testid="textarea-cover-letter"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="resumeUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t.applicationForm.resumeUrl}</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="https://" data-testid="input-resume-url" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="linkedinUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t.applicationForm.linkedinUrl}</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="https://linkedin.com/in/..." data-testid="input-linkedin" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="portfolioUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t.applicationForm.portfolioUrl}</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="https://" data-testid="input-portfolio" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="flex justify-end gap-3 pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsDialogOpen(false)}
+                  disabled={submitMutation.isPending}
+                  data-testid="button-cancel-application"
+                >
+                  {language === "ar" ? "إلغاء" : "Cancel"}
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={submitMutation.isPending}
+                  className="bg-primary hover:bg-primary/90"
+                  data-testid="button-submit-application"
+                >
+                  <Send className="h-4 w-4 mr-2" />
+                  {submitMutation.isPending ? t.applicationForm.submitting : t.applicationForm.submit}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+
       <Footer />
     </div>
   );

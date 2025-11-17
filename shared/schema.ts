@@ -148,6 +148,21 @@ export const analytics = pgTable("analytics", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const jobApplications = pgTable("job_applications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  careerId: varchar("career_id").notNull(),
+  fullName: text("full_name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone").notNull(),
+  coverLetter: text("cover_letter").notNull(),
+  resumeUrl: text("resume_url"),
+  linkedinUrl: text("linkedin_url"),
+  portfolioUrl: text("portfolio_url"),
+  yearsOfExperience: text("years_of_experience").notNull(),
+  status: text("status").notNull().default("pending"), // "pending", "reviewing", "interview", "rejected", "hired"
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const insertServiceSchema = createInsertSchema(services).omit({
   id: true,
   createdAt: true,
@@ -156,6 +171,23 @@ export const insertServiceSchema = createInsertSchema(services).omit({
 export const insertAnalyticsSchema = createInsertSchema(analytics).omit({
   id: true,
   createdAt: true,
+});
+
+export const jobApplicationStatusSchema = z.enum(["pending", "reviewing", "interview", "hired", "rejected"]);
+export type JobApplicationStatus = z.infer<typeof jobApplicationStatusSchema>;
+
+export const insertJobApplicationSchema = createInsertSchema(jobApplications).omit({
+  id: true,
+  createdAt: true,
+  status: true,
+}).extend({
+  email: z.string().email("Please enter a valid email address"),
+  phone: z.string().min(8, "Please enter a valid phone number"),
+  fullName: z.string().min(2, "Full name must be at least 2 characters"),
+  coverLetter: z.string().min(50, "Cover letter must be at least 50 characters"),
+  linkedinUrl: z.string().url("Please enter a valid LinkedIn URL").optional().or(z.literal("")),
+  portfolioUrl: z.string().url("Please enter a valid portfolio URL").optional().or(z.literal("")),
+  resumeUrl: z.string().url("Please enter a valid resume URL").optional().or(z.literal("")),
 });
 
 export type InsertContactSubmission = z.infer<typeof insertContactSubmissionSchema>;
@@ -172,3 +204,5 @@ export type InsertService = z.infer<typeof insertServiceSchema>;
 export type Service = typeof services.$inferSelect;
 export type InsertAnalytics = z.infer<typeof insertAnalyticsSchema>;
 export type Analytics = typeof analytics.$inferSelect;
+export type InsertJobApplication = z.infer<typeof insertJobApplicationSchema>;
+export type JobApplication = typeof jobApplications.$inferSelect;

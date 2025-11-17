@@ -20,6 +20,7 @@ import AdminDashboard from "@/pages/admin-dashboard";
 import AdminProjects from "@/pages/admin-projects";
 import AdminServices from "@/pages/admin-services";
 import AdminAnalytics from "@/pages/admin-analytics";
+import AdminJobApplications from "@/pages/admin-job-applications";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -35,6 +36,7 @@ function Router() {
       <Route path="/admin/projects" component={AdminProjects} />
       <Route path="/admin/services" component={AdminServices} />
       <Route path="/admin/analytics" component={AdminAnalytics} />
+      <Route path="/admin/job-applications" component={AdminJobApplications} />
       <Route path="/admin" component={AdminDashboard} />
       <Route component={NotFound} />
     </Switch>

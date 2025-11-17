@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertContactSubmissionSchema, insertPortfolioProjectSchema, insertTestimonialSchema, insertBlogPostSchema, insertCareerSchema, insertServiceSchema } from "@shared/schema";
+import { insertContactSubmissionSchema, insertPortfolioProjectSchema, insertTestimonialSchema, insertBlogPostSchema, insertCareerSchema, insertServiceSchema, insertJobApplicationSchema, jobApplicationStatusSchema } from "@shared/schema";
 import { requireAdmin, loginAdmin, logoutAdmin, checkAdminStatus } from "./auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -150,6 +150,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
         error: "Validation failed", 
         details: error.errors || error.message 
       });
+    }
+  });
+
+  app.post("/api/job-applications", async (req, res) => {
+    try {
+      const validatedData = insertJobApplicationSchema.parse(req.body);
+      const application = await storage.createJobApplication(validatedData);
+      res.json(application);
+    } catch (error: any) {
+      res.status(400).json({ 
+        error: "Validation failed", 
+        details: error.errors || error.message 
+      });
+    }
+  });
+
+  app.get("/api/admin/job-applications", requireAdmin, async (req, res) => {
+    try {
+      const applications = await storage.getAllJobApplications();
+      res.json(applications);
+    } catch (error: any) {
+      res.status(500).json({ error: "Failed to fetch job applications" });
+    }
+  });
+
+  app.patch("/api/admin/job-applications/:id/status", requireAdmin, async (req, res) => {
+    try {
+      const { status } = req.body;
+      if (!status) {
+        res.status(400).json({ error: "Status is required" });
+        return;
+      }
+      
+      const validationResult = jobApplicationStatusSchema.safeParse(status);
+      if (!validationResult.success) {
+        res.status(400).json({ 
+          error: "Invalid status value", 
+          details: "Status must be one of: pending, reviewing, interview, hired, rejected" 
+        });
+        return;
+      }
+      
+      const application = await storage.updateJobApplicationStatus(req.params.id, validationResult.data);
+      if (!application) {
+        res.status(404).json({ error: "Application not found" });
+        return;
+      }
+      res.json(application);
+    } catch (error: any) {
+      res.status(400).json({ error: "Update failed", details: error.message });
     }
   });
 

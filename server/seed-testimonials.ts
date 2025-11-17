@@ -79,6 +79,45 @@ const sampleTestimonials = [
     testimonialAr: "بوابة الحجز خفضت أعمالنا الإدارية بنسبة 80٪. تكامل التقويم والتذكيرات التلقائية غيرت قواعد اللعبة. فريق ممتاز للعمل معه!",
     projectType: "website",
     avatarUrl: null
+  },
+  {
+    clientName: "Abdullah Al-Naimi",
+    clientNameAr: "عبدالله النعيمي",
+    clientPosition: "Fitness Director",
+    clientPositionAr: "مدير اللياقة البدنية",
+    clientCompany: "Qatar Fitness Club",
+    clientCompanyAr: "نادي قطر للياقة البدنية",
+    rating: "5",
+    testimonial: "The fitness tracker app revolutionized how our members engage with their health journey. 70% increase in engagement speaks for itself. Outstanding development quality!",
+    testimonialAr: "تطبيق تتبع اللياقة أحدث ثورة في كيفية تفاعل أعضائنا مع رحلة صحتهم. زيادة بنسبة 70٪ في التفاعل تتحدث عن نفسها. جودة تطوير متميزة!",
+    projectType: "mobile",
+    avatarUrl: null
+  },
+  {
+    clientName: "Mariam Al-Attiyah",
+    clientNameAr: "مريم العطية",
+    clientPosition: "Sales Manager",
+    clientPositionAr: "مدير المبيعات",
+    clientCompany: "Qatar Real Estate Group",
+    clientCompanyAr: "مجموعة قطر العقارية",
+    rating: "5",
+    testimonial: "The virtual tour feature is incredible! Our property listings get 3x more engagement. Lead conversions up 45%. Best real estate platform in Qatar!",
+    testimonialAr: "ميزة الجولة الافتراضية مذهلة! قوائم العقارات لدينا تحصل على 3 أضعاف التفاعل. زيادة تحويلات العملاء المحتملين بنسبة 45٪. أفضل منصة عقارية في قطر!",
+    projectType: "website",
+    avatarUrl: null
+  },
+  {
+    clientName: "Dr. Hassan Al-Sulaiti",
+    clientNameAr: "د. حسن السليطي",
+    clientPosition: "Principal",
+    clientPositionAr: "المدير",
+    clientCompany: "Qatar Education Institute",
+    clientCompanyAr: "معهد قطر التعليمي",
+    rating: "5",
+    testimonial: "Our students love the interactive learning platform! 85% course completion rate and parents are thrilled. The offline mode is perfect for our needs. Exceptional work!",
+    testimonialAr: "طلابنا يحبون منصة التعليم التفاعلية! معدل إكمال الدورة 85٪ والآباء متحمسون. وضع عدم الاتصال مثالي لاحتياجاتنا. عمل استثنائي!",
+    projectType: "mobile",
+    avatarUrl: null
   }
 ];
 

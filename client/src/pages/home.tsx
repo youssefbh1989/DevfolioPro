@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { HeroSection } from "@/components/hero-section";
 import { ServicesSection } from "@/components/services-section";
+import { StatsSection } from "@/components/stats-section";
 import { PortfolioSection } from "@/components/portfolio-section";
 import { ProcessSection } from "@/components/process-section";
 import { WhyChooseSection } from "@/components/why-choose-section";
@@ -24,6 +25,7 @@ export default function Home() {
       <main>
         <HeroSection language={language} />
         <ServicesSection language={language} />
+        <StatsSection language={language} />
         <PortfolioSection language={language} />
         <ProcessSection language={language} />
         <WhyChooseSection language={language} />
