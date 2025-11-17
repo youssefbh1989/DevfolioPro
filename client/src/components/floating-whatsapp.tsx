@@ -20,9 +20,9 @@ export function FloatingWhatsApp({ language = "en" }: FloatingWhatsAppProps) {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleClick = async () => {
-    await apiRequest("POST", "/api/analytics/whatsapp", {}).catch(() => {});
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}`, "_blank", "noopener,noreferrer");
+  const handleClick = () => {
+    // Track analytics without blocking navigation
+    apiRequest("POST", "/api/analytics/whatsapp", {}).catch(() => {});
   };
 
   const tooltipText = language === "ar" ? "تواصل عبر واتساب" : "Chat on WhatsApp";
@@ -51,7 +51,10 @@ export function FloatingWhatsApp({ language = "en" }: FloatingWhatsAppProps) {
               <p className="text-sm font-medium">{tooltipText}</p>
             </motion.div>
             
-            <motion.button
+            <motion.a
+              href={`https://wa.me/${WHATSAPP_NUMBER}`}
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={handleClick}
               className="flex items-center justify-center w-14 h-14 rounded-full bg-[#25D366] hover:bg-[#20BA5A] text-white shadow-lg transition-all"
               whileHover={{ scale: 1.1 }}
@@ -59,7 +62,7 @@ export function FloatingWhatsApp({ language = "en" }: FloatingWhatsAppProps) {
               data-testid="button-floating-whatsapp"
             >
               <MessageCircle className="h-7 w-7" />
-            </motion.button>
+            </motion.a>
             
             <motion.div
               className="absolute inset-0 rounded-full bg-[#25D366] -z-10"
