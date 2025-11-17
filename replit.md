@@ -1,9 +1,60 @@
 # Qatar Digital Solutions - Portfolio Website
 
 ## Overview
-Qatar Digital Solutions is a bilingual (English/Arabic) professional portfolio website for the Qatari market, showcasing mobile app and website development services. It functions as a marketing and lead generation tool, featuring services, portfolio, process, value propositions, and a contact form. The design is premium, agency-style, inspired by Middle Eastern luxury aesthetics.
+Qatar Digital Solutions is a bilingual (English/Arabic) professional portfolio website for the Qatari market, showcasing mobile app and website development services. It functions as a marketing and lead generation tool, featuring services, portfolio, process, value propositions, and a contact form. The design follows the modern INSANE template aesthetic with a professional teal/blue-gray color palette and futuristic 3D animations.
 
-## Recent Changes (November 16, 2025)
+## Recent Changes (November 17, 2025)
+
+### Complete Design Redesign - INSANE Template Migration
+- ✅ **Color Scheme Overhaul**: Migrated from maroon/gold to professional teal/blue-gray palette
+  - Primary: #507D8E (teal) for main accents, headings, buttons, icons
+  - Accent: #7BC8E2 (light blue) for highlights, prices, secondary accents
+  - All inline color styles replaced with semantic Tailwind tokens (text-primary, bg-primary, text-accent)
+  - Complete dark mode support via CSS variables
+  - Updated design_guidelines.md with new color system
+
+- ✅ **Enhanced 3D Animation System** (`client/src/lib/animations.ts`):
+  - `cardHover`: 3D tilt effect with rotateX(-5deg), translateZ(40px), proper perspective hierarchy
+  - `glowPulse`: Infinite glowing pulse for decorative elements
+  - `diagonalSlideIn`: Diagonal entrance animations for modern feel
+  - `morphIn`: Morphing entrance effects
+  - All animations respect `prefers-reduced-motion` accessibility preference
+
+- ✅ **Hero Section Redesign**:
+  - Diagonal overlay elements with gradient backgrounds
+  - Geometric accent lines for modern look
+  - Floating glow pulse decorative elements (gated behind reduced motion)
+  - Parallax background effects
+  - Modern teal color scheme throughout
+
+- ✅ **Services Section Complete Rebuild**:
+  - Numbered cards (01, 02, 03, 04) with large background numbers
+  - Left border accents (teal for mobile apps, light blue for websites)
+  - 3D hover transforms with proper perspective context
+  - Responsive number scaling: text-3xl (mobile) → text-4xl (sm) → text-6xl (md+)
+  - Icon animations with scale and rotation on hover
+  - Proper perspective hierarchy: parent wrapper → motion.div → Card
+
+- ✅ **Admin Dashboard Complete Update**:
+  - All pages (dashboard, projects, services, analytics) use teal color scheme
+  - Removed all maroon (#7D0B2E) and gold (#D4AF37) inline styles
+  - Updated stat displays, headings, buttons to use semantic tokens
+  - Consistent futuristic card animations with 3D hover effects
+  - Admin login page maintains special gradient design
+
+- ✅ **Accessibility Improvements**:
+  - All decorative animations gated behind `useReducedMotion` hook
+  - Hero diagonal overlays respect motion preferences
+  - Floating glow elements respect motion preferences
+  - WCAG compliant motion accessibility
+
+- ✅ **Mobile Optimization**:
+  - Numbered overlays visible on all screen sizes (no longer hidden on mobile)
+  - Responsive scaling prevents text collision
+  - Proper overflow handling for 3D effects
+  - Tested across multiple breakpoints
+
+## Previous Changes (November 16, 2025)
 
 ### Portfolio Project Creation & Futuristic Animations
 - ✅ Implemented complete portfolio project creation feature in admin dashboard
@@ -60,7 +111,7 @@ Preferred communication style: Simple, everyday language.
 
 ### Frontend
 - **Technology Stack**: React 18+ with TypeScript, Vite, Wouter for routing, TanStack Query for server state, React Hook Form with Zod for form validation.
-- **UI/UX**: shadcn/ui (New York style), Radix UI primitives, Tailwind CSS with a custom design system. Custom color palette (maroon, gold), Poppins and Inter typography. Fully responsive, mobile-first, with RTL support for Arabic.
+- **UI/UX**: shadcn/ui (New York style), Radix UI primitives, Tailwind CSS with a custom design system. INSANE template-inspired design with teal/blue-gray color palette (#507D8E primary, #7BC8E2 accent), Poppins and Inter typography. Fully responsive, mobile-first, with RTL support for Arabic.
 - **State Management**: React hooks for local state, TanStack Query for API data.
 - **Key Features**: Bilingual toggle, smooth scrolling, interactive portfolio modals, auto-rotating testimonials, contact form with validation, toast notifications, reusable section components.
 - **Animation System**: Framer Motion for scroll-triggered animations, stagger effects, hover effects, and smooth transitions, with accessibility for `prefers-reduced-motion`.
