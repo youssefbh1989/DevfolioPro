@@ -151,13 +151,13 @@ export const perspective3D: Variants = {
 };
 
 export const glowPulse: Variants = {
-  initial: { opacity: 0.7, filter: "drop-shadow(0 0 0px rgba(125, 11, 46, 0))" },
+  initial: { opacity: 0.7, filter: "drop-shadow(0 0 0px rgba(80, 125, 142, 0))" },
   animate: {
     opacity: [0.7, 1, 0.7],
     filter: [
-      "drop-shadow(0 0 0px rgba(125, 11, 46, 0))",
-      "drop-shadow(0 0 20px rgba(125, 11, 46, 0.6))",
-      "drop-shadow(0 0 0px rgba(125, 11, 46, 0))"
+      "drop-shadow(0 0 0px rgba(80, 125, 142, 0))",
+      "drop-shadow(0 0 20px rgba(80, 125, 142, 0.6))",
+      "drop-shadow(0 0 0px rgba(80, 125, 142, 0))"
     ],
     transition: {
       duration: 3,
@@ -191,14 +191,47 @@ export const cardHover = {
     y: 0,
     rotateX: 0,
     rotateY: 0,
+    z: 0,
     filter: "brightness(1) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))"
   },
   hover: {
     scale: 1.03,
     y: -8,
-    filter: "brightness(1.05) drop-shadow(0 20px 40px rgba(125, 11, 46, 0.15))",
+    rotateX: -5,
+    z: 40,
+    filter: "brightness(1.05) drop-shadow(0 20px 40px rgba(80, 125, 142, 0.2))",
     transition: {
       duration: 0.4,
+      ease: [0.16, 1, 0.3, 1],
+    },
+  },
+};
+
+export const diagonalSlideIn: Variants = {
+  hidden: { opacity: 0, x: -50, y: 50, rotateZ: -5 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    y: 0,
+    rotateZ: 0,
+    transition: {
+      duration: 0.8,
+      ease: [0.16, 1, 0.3, 1],
+      type: "spring",
+      stiffness: 80,
+      damping: 15
+    },
+  },
+};
+
+export const numberCounter: Variants = {
+  hidden: { opacity: 0, scale: 0.5, filter: "blur(10px)" },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    filter: "blur(0px)",
+    transition: {
+      duration: 0.6,
       ease: [0.16, 1, 0.3, 1],
     },
   },

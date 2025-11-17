@@ -59,7 +59,7 @@ export default function AdminDashboard() {
       >
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold" style={{ color: "#7D0B2E" }}>
+            <h1 className="text-2xl font-bold text-primary">
               Admin Dashboard
             </h1>
             <motion.div
@@ -99,12 +99,11 @@ export default function AdminDashboard() {
                 <Card className="cursor-pointer transition-all">
                   <CardHeader>
                     <motion.div
-                      className="w-12 h-12 rounded-lg flex items-center justify-center mb-4"
-                      style={{ backgroundColor: "#7D0B2E" }}
+                      className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center mb-4"
                       whileHover={{ rotate: [0, -5, 5, 0], scale: 1.1 }}
                       transition={{ duration: 0.5 }}
                     >
-                      <FolderKanban className="h-6 w-6 text-white" />
+                      <FolderKanban className="h-6 w-6 text-primary-foreground" />
                     </motion.div>
                     <CardTitle>Portfolio Projects</CardTitle>
                     <CardDescription>
@@ -126,12 +125,11 @@ export default function AdminDashboard() {
                 <Card className="cursor-pointer transition-all">
                   <CardHeader>
                     <motion.div
-                      className="w-12 h-12 rounded-lg flex items-center justify-center mb-4"
-                      style={{ backgroundColor: "#7D0B2E" }}
+                      className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center mb-4"
                       whileHover={{ rotate: [0, -5, 5, 0], scale: 1.1 }}
                       transition={{ duration: 0.5 }}
                     >
-                      <Package className="h-6 w-6 text-white" />
+                      <Package className="h-6 w-6 text-primary-foreground" />
                     </motion.div>
                     <CardTitle>Services & Pricing</CardTitle>
                     <CardDescription>
@@ -153,8 +151,7 @@ export default function AdminDashboard() {
                 <Card className="cursor-pointer transition-all">
                   <CardHeader>
                     <motion.div
-                      className="w-12 h-12 rounded-lg flex items-center justify-center mb-4"
-                      style={{ backgroundColor: "#7D0B2E" }}
+                      className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center mb-4"
                       whileHover={{ rotate: [0, -5, 5, 0], scale: 1.1 }}
                       transition={{ duration: 0.5 }}
                     >

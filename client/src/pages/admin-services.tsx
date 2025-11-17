@@ -144,13 +144,13 @@ export default function AdminServices() {
                   <ArrowLeft className="h-4 w-4" />
                 </Button>
               </Link>
-              <h1 className="text-2xl font-bold" style={{ color: "#7D0B2E" }}>
+              <h1 className="text-2xl font-bold text-primary">
                 Manage Services & Pricing
               </h1>
             </div>
             <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
               <DialogTrigger asChild>
-                <Button data-testid="button-add-service" style={{ backgroundColor: "#7D0B2E", color: "white" }}>
+                <Button data-testid="button-add-service">
                   <Plus className="h-4 w-4 mr-2" />
                   Add Service
                 </Button>
@@ -245,7 +245,6 @@ export default function AdminServices() {
                   <Button
                     onClick={handleAddService}
                     className="w-full"
-                    style={{ backgroundColor: "#7D0B2E", color: "white" }}
                     data-testid="button-submit-add-service"
                   >
                     Add Service
@@ -285,7 +284,7 @@ export default function AdminServices() {
                         </Badge>
                       </div>
                       <p className="text-sm text-muted-foreground mb-2">{service.description}</p>
-                      <p className="text-base font-semibold" style={{ color: "#D4AF37" }}>
+                      <p className="text-base font-semibold text-accent">
                         {service.price}
                       </p>
                       <div className="mt-3 space-y-1">

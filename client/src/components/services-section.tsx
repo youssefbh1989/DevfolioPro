@@ -5,7 +5,7 @@ import { useInView } from "framer-motion";
 import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { Service } from "@shared/schema";
-import { staggerContainer, staggerItem } from "@/lib/animations";
+import { staggerContainer, staggerItem, cardHover, numberCounter } from "@/lib/animations";
 
 interface ServicesSectionProps {
   language: "en" | "ar";
@@ -114,31 +114,52 @@ export function ServicesSection({ language }: ServicesSectionProps) {
                 </Card>
               ) : (
                 mobileServices.map((service, index) => (
-                  <motion.div key={service.id} variants={staggerItem}>
-                    <Card className="hover-elevate transition-all duration-300 group" data-testid={`card-mobile-service-${index}`}>
-                      <CardHeader className="pb-3">
+                  <div 
+                    key={service.id}
+                    style={{ perspective: "1000px" }}
+                  >
+                    <motion.div
+                      variants={cardHover}
+                      initial="rest"
+                      whileHover="hover"
+                      style={{ transformStyle: "preserve-3d" }}
+                    >
+                      <Card 
+                        className="relative hover-elevate transition-all duration-300 group border-l-4 border-l-primary/40 overflow-visible" 
+                        data-testid={`card-mobile-service-${index}`}
+                      >
+                      <motion.div
+                        variants={numberCounter}
+                        initial="hidden"
+                        animate={isInView ? "visible" : "hidden"}
+                        transition={{ delay: index * 0.1 }}
+                        className="absolute top-1 right-1 text-3xl sm:text-4xl md:text-6xl font-bold text-primary/5 leading-none"
+                      >
+                        {String(index + 1).padStart(2, '0')}
+                      </motion.div>
+                      <CardHeader className="pb-3 relative z-10">
                         <div className="flex items-start gap-4">
                           <motion.div
-                            whileHover={{ rotate: 360, scale: 1.1 }}
-                            transition={{ duration: 0.5 }}
-                            className="rounded-md bg-primary/10 p-3 shrink-0"
+                            className="rounded-lg bg-gradient-to-br from-primary/10 to-accent/10 p-3 shrink-0 shadow-sm"
+                            whileHover={{ scale: 1.1, rotate: 5 }}
+                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
                           >
                             <Smartphone className="h-6 w-6 text-primary" />
                           </motion.div>
                           <div className="flex-1">
-                            <CardTitle className="text-lg font-semibold mb-1" data-testid={`text-mobile-service-name-${index}`}>
-                              {language === "ar" ? service.nameAr : service.name}
+                            <CardTitle className="text-lg font-semibold mb-1 flex items-baseline gap-2" data-testid={`text-mobile-service-name-${index}`}>
+                              <span>{language === "ar" ? service.nameAr : service.name}</span>
                             </CardTitle>
-                            <p className="text-sm text-muted-foreground mb-2" data-testid={`text-mobile-service-desc-${index}`}>
+                            <p className="text-sm text-muted-foreground mb-2 leading-relaxed" data-testid={`text-mobile-service-desc-${index}`}>
                               {language === "ar" ? service.descriptionAr : service.description}
                             </p>
-                            <p className="text-sm font-semibold" style={{ color: "#D4AF37" }}>
+                            <p className="text-base font-bold text-accent mb-3">
                               {language === "ar" ? service.priceAr : service.price}
                             </p>
-                            <ul className="mt-3 space-y-1">
+                            <ul className="mt-3 space-y-1.5">
                               {(language === "ar" ? service.featuresAr : service.features).slice(0, 3).map((feature, idx) => (
                                 <li key={idx} className="text-xs text-muted-foreground flex items-start gap-2">
-                                  <Check className="h-3 w-3 text-primary shrink-0 mt-0.5" />
+                                  <Check className="h-4 w-4 text-accent shrink-0 mt-0.5" />
                                   <span>{feature}</span>
                                 </li>
                               ))}
@@ -146,8 +167,9 @@ export function ServicesSection({ language }: ServicesSectionProps) {
                           </div>
                         </div>
                       </CardHeader>
-                    </Card>
-                  </motion.div>
+                      </Card>
+                    </motion.div>
+                  </div>
                 ))
               )}
             </div>
@@ -179,31 +201,52 @@ export function ServicesSection({ language }: ServicesSectionProps) {
                 </Card>
               ) : (
                 websiteServices.map((service, index) => (
-                  <motion.div key={service.id} variants={staggerItem}>
-                    <Card className="hover-elevate transition-all duration-300 group" data-testid={`card-website-service-${index}`}>
-                      <CardHeader className="pb-3">
+                  <div 
+                    key={service.id}
+                    style={{ perspective: "1000px" }}
+                  >
+                    <motion.div
+                      variants={cardHover}
+                      initial="rest"
+                      whileHover="hover"
+                      style={{ transformStyle: "preserve-3d" }}
+                    >
+                      <Card 
+                        className="relative hover-elevate transition-all duration-300 group border-l-4 border-l-accent/40 overflow-visible" 
+                        data-testid={`card-website-service-${index}`}
+                      >
+                      <motion.div
+                        variants={numberCounter}
+                        initial="hidden"
+                        animate={isInView ? "visible" : "hidden"}
+                        transition={{ delay: index * 0.1 }}
+                        className="absolute top-1 right-1 text-3xl sm:text-4xl md:text-6xl font-bold text-accent/5 leading-none"
+                      >
+                        {String(index + 1).padStart(2, '0')}
+                      </motion.div>
+                      <CardHeader className="pb-3 relative z-10">
                         <div className="flex items-start gap-4">
                           <motion.div
-                            whileHover={{ rotate: 360, scale: 1.1 }}
-                            transition={{ duration: 0.5 }}
-                            className="rounded-md bg-accent/20 p-3 shrink-0"
+                            className="rounded-lg bg-gradient-to-br from-accent/10 to-primary/10 p-3 shrink-0 shadow-sm"
+                            whileHover={{ scale: 1.1, rotate: -5 }}
+                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
                           >
                             <Globe className="h-6 w-6 text-accent-foreground" />
                           </motion.div>
                           <div className="flex-1">
-                            <CardTitle className="text-lg font-semibold mb-1" data-testid={`text-website-service-name-${index}`}>
-                              {language === "ar" ? service.nameAr : service.name}
+                            <CardTitle className="text-lg font-semibold mb-1 flex items-baseline gap-2" data-testid={`text-website-service-name-${index}`}>
+                              <span>{language === "ar" ? service.nameAr : service.name}</span>
                             </CardTitle>
-                            <p className="text-sm text-muted-foreground mb-2" data-testid={`text-website-service-desc-${index}`}>
+                            <p className="text-sm text-muted-foreground mb-2 leading-relaxed" data-testid={`text-website-service-desc-${index}`}>
                               {language === "ar" ? service.descriptionAr : service.description}
                             </p>
-                            <p className="text-sm font-semibold" style={{ color: "#D4AF37" }}>
+                            <p className="text-base font-bold text-accent mb-3">
                               {language === "ar" ? service.priceAr : service.price}
                             </p>
-                            <ul className="mt-3 space-y-1">
+                            <ul className="mt-3 space-y-1.5">
                               {(language === "ar" ? service.featuresAr : service.features).slice(0, 3).map((feature, idx) => (
                                 <li key={idx} className="text-xs text-muted-foreground flex items-start gap-2">
-                                  <Check className="h-3 w-3 text-primary shrink-0 mt-0.5" />
+                                  <Check className="h-4 w-4 text-accent shrink-0 mt-0.5" />
                                   <span>{feature}</span>
                                 </li>
                               ))}
@@ -211,8 +254,9 @@ export function ServicesSection({ language }: ServicesSectionProps) {
                           </div>
                         </div>
                       </CardHeader>
-                    </Card>
-                  </motion.div>
+                      </Card>
+                    </motion.div>
+                  </div>
                 ))
               )}
             </div>

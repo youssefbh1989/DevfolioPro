@@ -51,7 +51,7 @@ export default function AdminAnalytics() {
                   <ArrowLeft className="h-4 w-4" />
                 </Button>
               </Link>
-              <h1 className="text-2xl font-bold" style={{ color: "#7D0B2E" }}>
+              <h1 className="text-2xl font-bold text-primary">
                 Analytics Dashboard
               </h1>
             </div>
@@ -67,7 +67,7 @@ export default function AdminAnalytics() {
               <Eye className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold" style={{ color: "#7D0B2E" }}>
+              <div className="text-2xl font-bold text-primary">
                 {analyticsLoading ? "..." : totalPageViews.toLocaleString()}
               </div>
               <p className="text-xs text-muted-foreground">
@@ -82,7 +82,7 @@ export default function AdminAnalytics() {
               <Phone className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold" style={{ color: "#7D0B2E" }}>
+              <div className="text-2xl font-bold text-primary">
                 {analyticsLoading ? "..." : totalWhatsappClicks.toLocaleString()}
               </div>
               <p className="text-xs text-muted-foreground">
@@ -97,7 +97,7 @@ export default function AdminAnalytics() {
               <MessageSquare className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold" style={{ color: "#7D0B2E" }}>
+              <div className="text-2xl font-bold text-primary">
                 {contactsLoading ? "..." : totalContacts.toLocaleString()}
               </div>
               <p className="text-xs text-muted-foreground">

@@ -136,14 +136,13 @@ export default function AdminProjects() {
                   <ArrowLeft className="h-4 w-4" />
                 </Button>
               </Link>
-              <h1 className="text-2xl font-bold" style={{ color: "#7D0B2E" }}>
+              <h1 className="text-2xl font-bold text-primary">
                 Manage Portfolio Projects
               </h1>
             </div>
             <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
               <DialogTrigger asChild>
                 <Button 
-                  style={{ backgroundColor: "#7D0B2E", color: "white" }}
                   data-testid="button-add-project"
                 >
                   <Plus className="h-4 w-4 mr-2" />
@@ -381,7 +380,6 @@ export default function AdminProjects() {
                     <Button 
                       onClick={handleAddProject}
                       disabled={createMutation.isPending}
-                      style={{ backgroundColor: "#7D0B2E", color: "white" }}
                       data-testid="button-submit-project"
                     >
                       {createMutation.isPending ? "Adding..." : "Add Project"}

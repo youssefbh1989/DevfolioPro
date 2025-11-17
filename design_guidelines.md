@@ -4,11 +4,12 @@
 **Reference-Based Approach**: Drawing inspiration from premium digital agency portfolios (Awwwards-style agencies, Apple's product pages for clean hierarchy) with Middle Eastern luxury aesthetics. Focus on trustworthy, premium presentation suitable for Qatar's business market.
 
 ## Color Palette
-- **Primary Maroon**: #7D0B2E (CTAs, headers, accents)
-- **Primary Gold**: #D4AF37 (secondary CTAs, highlights, decorative elements)
+- **Primary Teal**: #507D8E (CTAs, headers, accents) - HSL(197, 28%, 43%)
+- **Accent Blue**: #7BC8E2 (secondary CTAs, highlights, decorative elements) - HSL(195, 75%, 65%)
 - **White**: #FFFFFF (backgrounds, text on dark)
 - **Dark Gray**: #2C2C2C (body text, secondary backgrounds)
 - **Light Gray**: #F5F5F5 (section backgrounds, alternating sections)
+- **Dark Teal**: #3D6678 (darker variant for depth) - HSL(197, 28%, 35%)
 
 ## Typography
 - **Headings**: Poppins (600-700 weight) via Google Fonts - Modern, professional, excellent Arabic support

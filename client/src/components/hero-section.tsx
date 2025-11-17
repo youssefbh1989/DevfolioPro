@@ -2,7 +2,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import heroImage from "@assets/generated_images/Qatar_office_tech_collaboration_4ec9cba7.png";
-import { fadeInUp, fadeIn, magneticHover, glowPulse, morphIn } from "@/lib/animations";
+import { fadeInUp, fadeIn, magneticHover, glowPulse, morphIn, diagonalSlideIn } from "@/lib/animations";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 interface HeroSectionProps {
   language: "en" | "ar";
@@ -25,6 +26,7 @@ const content = {
 
 export function HeroSection({ language }: HeroSectionProps) {
   const t = content[language];
+  const prefersReducedMotion = useReducedMotion();
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -56,6 +58,33 @@ export function HeroSection({ language }: HeroSectionProps) {
           transition={{ duration: 1.2, delay: 0.3 }}
           className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/85 to-primary/75"
         />
+        
+        {/* Diagonal overlay elements - modern design */}
+        {!prefersReducedMotion && (
+          <>
+            <motion.div
+              initial={{ opacity: 0, x: -100 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1, delay: 0.5 }}
+              className="absolute -left-20 top-1/4 w-96 h-96 bg-accent/10 backdrop-blur-sm transform rotate-45 hidden lg:block"
+            />
+            
+            <motion.div
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1, delay: 0.7 }}
+              className="absolute -right-20 bottom-1/4 w-80 h-80 bg-white/5 backdrop-blur-sm transform -rotate-12 hidden lg:block"
+            />
+            
+            {/* Geometric accent lines */}
+            <motion.div
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 1, delay: 0.9 }}
+              className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-accent/50 to-transparent"
+            />
+          </>
+        )}
       </motion.div>
 
       {/* Animated content */}
@@ -126,28 +155,32 @@ export function HeroSection({ language }: HeroSectionProps) {
       </div>
 
       {/* Floating decorative elements with glow pulse */}
-      <motion.div
-        variants={glowPulse}
-        initial="initial"
-        animate="animate"
-        className="absolute bottom-20 left-10 w-24 h-24 rounded-full bg-accent/25 blur-3xl hidden lg:block"
-      />
-      
-      <motion.div
-        variants={glowPulse}
-        initial="initial"
-        animate="animate"
-        transition={{ delay: 0.5 }}
-        className="absolute top-40 right-10 w-32 h-32 rounded-full bg-accent/20 blur-3xl hidden lg:block"
-      />
-      
-      <motion.div
-        variants={glowPulse}
-        initial="initial"
-        animate="animate"
-        transition={{ delay: 1 }}
-        className="absolute bottom-1/3 right-1/4 w-28 h-28 rounded-full bg-primary/15 blur-3xl hidden lg:block"
-      />
+      {!prefersReducedMotion && (
+        <>
+          <motion.div
+            variants={glowPulse}
+            initial="initial"
+            animate="animate"
+            className="absolute bottom-20 left-10 w-24 h-24 rounded-full bg-accent/25 blur-3xl hidden lg:block"
+          />
+          
+          <motion.div
+            variants={glowPulse}
+            initial="initial"
+            animate="animate"
+            transition={{ delay: 0.5 }}
+            className="absolute top-40 right-10 w-32 h-32 rounded-full bg-accent/20 blur-3xl hidden lg:block"
+          />
+          
+          <motion.div
+            variants={glowPulse}
+            initial="initial"
+            animate="animate"
+            transition={{ delay: 1 }}
+            className="absolute bottom-1/3 right-1/4 w-28 h-28 rounded-full bg-primary/15 blur-3xl hidden lg:block"
+          />
+        </>
+      )}
     </section>
   );
 }
