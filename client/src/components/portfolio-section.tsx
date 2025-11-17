@@ -60,17 +60,18 @@ export function PortfolioSection({ language }: PortfolioSectionProps) {
   const websiteProjects = projects.filter(p => p.type === "website");
 
   const ProjectCard = ({ project }: { project: PortfolioProject }) => (
-    <motion.div
-      variants={cardHover}
-      initial="rest"
-      whileHover="hover"
-      style={{ perspective: "1000px" }}
-    >
-      <Card
-        className="group transition-all duration-300 overflow-hidden cursor-pointer h-full"
-        onClick={() => setSelectedProject(project)}
-        data-testid={`card-${project.type}-project-${project.id}`}
+    <div style={{ perspective: "1000px" }}>
+      <motion.div
+        variants={cardHover}
+        initial="rest"
+        whileHover="hover"
+        style={{ transformStyle: "preserve-3d" }}
       >
+        <Card
+          className="group transition-all duration-300 overflow-visible cursor-pointer h-full hover-elevate border-l-4 border-l-primary/30"
+          onClick={() => setSelectedProject(project)}
+          data-testid={`card-${project.type}-project-${project.id}`}
+        >
         <motion.div
           className={project.type === "mobile" ? "aspect-[3/4]" : "aspect-[4/3]"}
           style={{ overflow: "hidden", backgroundColor: "var(--muted)" }}
@@ -109,15 +110,24 @@ export function PortfolioSection({ language }: PortfolioSectionProps) {
             {t.viewDetails}
           </Button>
         </CardContent>
-      </Card>
-    </motion.div>
+        </Card>
+      </motion.div>
+    </div>
   );
 
   return (
-    <section id="portfolio" className="py-20 md:py-24 bg-background min-h-[600px]" ref={ref}>
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <h2 className="font-serif font-bold text-3xl md:text-5xl text-foreground mb-4" data-testid="text-portfolio-title">
+    <section id="portfolio" className="relative py-20 md:py-24 bg-gradient-to-b from-background to-muted/30 min-h-[600px] overflow-hidden" ref={ref}>
+      {/* Diagonal accent overlay */}
+      <div className="absolute top-20 right-0 w-96 h-96 bg-primary/5 rotate-45 blur-3xl" />
+      
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        <motion.div 
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="font-serif font-bold text-3xl md:text-5xl text-primary mb-4" data-testid="text-portfolio-title">
             {t.title}
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto" data-testid="text-portfolio-subtitle">
